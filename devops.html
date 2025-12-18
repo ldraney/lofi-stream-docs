@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lofi Stream - DevOps & Infrastructure</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #1a1a2e;
+      --bg-secondary: #16213e;
+      --accent: #e94560;
+      --accent-secondary: #0f3460;
+      --text: #eaeaea;
+      --text-muted: #a0a0a0;
+      --success: #4ecca3;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --border: #2a2a4a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, var(--accent), #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle { color: var(--text-muted); font-size: 1.1rem; }
+
+    nav {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      padding: 0.5rem 1rem;
+      background: var(--bg-secondary);
+      color: var(--text);
+      text-decoration: none;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    nav a:hover, nav a.active {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    section { margin-bottom: 3rem; }
+
+    h2 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent-secondary);
+    }
+
+    h3 { color: var(--text); margin: 1.5rem 0 0.75rem; }
+    h4 { color: var(--text-muted); margin: 1rem 0 0.5rem; }
+    p { margin-bottom: 1rem; color: var(--text-muted); }
+
+    .mermaid {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th { background: var(--accent-secondary); color: var(--text); font-weight: 600; }
+    td { color: var(--text-muted); }
+    tr:last-child td { border-bottom: none; }
+
+    code {
+      background: var(--accent-secondary);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9em;
+    }
+
+    pre {
+      background: var(--bg-secondary);
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1rem 0;
+      border-left: 3px solid var(--accent);
+    }
+
+    pre code { background: none; padding: 0; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .card {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+    }
+
+    .card.prod { border-left: 4px solid var(--success); }
+    .card.dev { border-left: 4px solid var(--warning); }
+    .card h4 { color: var(--text); margin-top: 0; }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-badge.live { background: var(--success); color: var(--bg); }
+    .status-badge.stopped { background: var(--warning); color: var(--bg); }
+
+    ul { list-style: none; padding-left: 1rem; }
+
+    li {
+      position: relative;
+      padding-left: 1.25rem;
+      margin-bottom: 0.4rem;
+      color: var(--text-muted);
+    }
+
+    li::before {
+      content: '>';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    .warning-box {
+      background: rgba(255, 193, 7, 0.1);
+      border: 1px solid var(--warning);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+
+    .warning-box h4 { color: var(--warning); margin-top: 0; }
+
+    .danger-box {
+      background: rgba(220, 53, 69, 0.1);
+      border: 1px solid var(--danger);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+
+    .danger-box h4 { color: var(--danger); margin-top: 0; }
+
+    footer {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>DevOps & Infrastructure</h1>
+    <p class="subtitle">Deployment pipelines, secrets management, and scaling architecture</p>
+    <nav>
+      <a href="index.html">Overview & Roadmap</a>
+      <a href="platforms.html">Platforms</a>
+      <a href="architecture.html">Architecture</a>
+      <a href="devops.html" class="active">DevOps</a>
+    </nav>
+  </header>
+
+  <section id="servers">
+    <h2>Server Organization</h2>
+    <p>Two-server setup separating production workloads from development/testing.</p>
+
+    <div class="card-grid">
+      <div class="card prod">
+        <h4>Production Server (CPX62) <span class="status-badge live">LIVE</span></h4>
+        <table>
+          <tr><td>IP Address</td><td><code>135.181.150.82</code></td></tr>
+          <tr><td>Specs</td><td>16 vCPU AMD, 32GB RAM, 640GB NVMe</td></tr>
+          <tr><td>Cost</td><td>$42.99/month</td></tr>
+          <tr><td>Location</td><td>Hetzner EU Central (Helsinki)</td></tr>
+          <tr><td>OS</td><td>Ubuntu 24.04 LTS</td></tr>
+          <tr><td>Streams</td><td>YouTube + Twitch (active)</td></tr>
+          <tr><td>Capacity</td><td>16-20 simultaneous streams</td></tr>
+        </table>
+        <pre><code>ssh -i ~/api-secrets/hetzner-server/id_ed25519 root@135.181.150.82</code></pre>
+      </div>
+
+      <div class="card dev">
+        <h4>Development Server (CX22) <span class="status-badge stopped">STOPPED</span></h4>
+        <table>
+          <tr><td>IP Address</td><td><code>5.78.42.22</code></td></tr>
+          <tr><td>Specs</td><td>2 vCPU, 2GB RAM, 40GB NVMe</td></tr>
+          <tr><td>Cost</td><td>~$4.50/month</td></tr>
+          <tr><td>Location</td><td>Hetzner EU Central</td></tr>
+          <tr><td>Streams</td><td>None (services disabled)</td></tr>
+          <tr><td>Purpose</td><td>Testing new themes/features</td></tr>
+        </table>
+        <pre><code>ssh -i ~/api-secrets/hetzner-server/id_ed25519 root@5.78.42.22</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section id="repos">
+    <h2>Repository Structure</h2>
+
+    <div class="mermaid">
+flowchart TB
+    subgraph local["Local Development (WSL2)"]
+        LYT["~/lofi-stream-youtube"]
+        LTW["~/lofi-stream-twitch"]
+        LDOC["~/lofi-stream-docs"]
+        LSEC["~/api-secrets/"]
+    end
+
+    subgraph github["GitHub"]
+        GYT["ldraney/lofi-stream-youtube"]
+        GTW["ldraney/lofi-stream-twitch"]
+        GDOC["ldraney/lofi-stream-docs"]
+    end
+
+    subgraph pages["GitHub Pages (auto-deploy)"]
+        PYT["ldraney.github.io/lofi-stream-youtube"]
+        PTW["ldraney.github.io/lofi-stream-twitch"]
+        PDOC["ldraney.github.io/lofi-stream-docs"]
+    end
+
+    subgraph prod["Production Server"]
+        POPT["/opt/lofi-stream/"]
+        POPT2["/opt/lofi-stream-twitch/"]
+    end
+
+    LYT -->|"git push"| GYT --> PYT
+    LTW -->|"git push"| GTW --> PTW
+    LDOC -->|"git push"| GDOC --> PDOC
+
+    PYT -->|"rendered by Chromium"| prod
+    PTW -->|"rendered by Chromium"| prod
+    LSEC -->|"SSH key"| prod
+    </div>
+
+    <h3>Local Directory Structure</h3>
+    <pre><code>~/
+├── lofi-stream-youtube/
+│   ├── docs/                    # GitHub Pages source (the visual page)
+│   │   ├── index.html
+│   │   ├── style.css
+│   │   └── audio.js
+│   └── server/                  # Server deployment scripts
+│       ├── stream.sh           # Main streaming script
+│       ├── lofi-stream.service # systemd service file
+│       └── setup.sh            # Server setup script
+│
+├── lofi-stream-twitch/
+│   ├── docs/                    # Coffee shop theme
+│   └── server/
+│       ├── stream.sh
+│       └── lofi-stream-twitch.service
+│
+├── lofi-stream-docs/            # This repository
+│   ├── index.html
+│   ├── platforms.html
+│   ├── architecture.html
+│   └── devops.html
+│
+└── api-secrets/
+    └── hetzner-server/
+        └── id_ed25519           # SSH private key</code></pre>
+  </section>
+
+  <section id="processes">
+    <h2>Process Architecture</h2>
+    <p>Each stream runs as an isolated stack with its own display, audio sink, and FFmpeg instance.</p>
+
+    <div class="mermaid">
+flowchart TB
+    subgraph systemd["systemd Service Manager"]
+        SVC1["lofi-stream.service"]
+        SVC2["lofi-stream-twitch.service"]
+    end
+
+    subgraph yt["YouTube Stack - Display :99"]
+        XVFB1["Xvfb :99"]
+        CHROME1["Chromium"]
+        PULSE1["virtual_speaker"]
+        FF1["FFmpeg"]
+    end
+
+    subgraph tw["Twitch Stack - Display :98"]
+        XVFB2["Xvfb :98"]
+        CHROME2["Chromium"]
+        PULSE2["twitch_speaker"]
+        FF2["FFmpeg"]
+    end
+
+    SVC1 --> yt
+    SVC2 --> tw
+
+    XVFB1 --> FF1
+    CHROME1 --> PULSE1 --> FF1
+    FF1 -->|"RTMP"| YT["YouTube Live"]
+
+    XVFB2 --> FF2
+    CHROME2 --> PULSE2 --> FF2
+    FF2 -->|"RTMP"| TW["Twitch Live"]
+    </div>
+
+    <h3>Process Isolation</h3>
+    <table>
+      <tr>
+        <th>Resource</th>
+        <th>YouTube Stack</th>
+        <th>Twitch Stack</th>
+        <th>Conflicts?</th>
+      </tr>
+      <tr>
+        <td>X11 Display</td>
+        <td><code>:99</code></td>
+        <td><code>:98</code></td>
+        <td>No - separate displays</td>
+      </tr>
+      <tr>
+        <td>PulseAudio Sink</td>
+        <td><code>virtual_speaker</code></td>
+        <td><code>twitch_speaker</code></td>
+        <td>No - named sinks</td>
+      </tr>
+      <tr>
+        <td>Chromium Data Dir</td>
+        <td>Default</td>
+        <td><code>/tmp/chromium-twitch</code></td>
+        <td>No - separate dirs</td>
+      </tr>
+      <tr>
+        <td>systemd Service</td>
+        <td><code>lofi-stream.service</code></td>
+        <td><code>lofi-stream-twitch.service</code></td>
+        <td>No - independent</td>
+      </tr>
+    </table>
+
+    <h3>Resource Usage Per Stream</h3>
+    <table>
+      <tr>
+        <th>Process</th>
+        <th>CPU</th>
+        <th>RAM</th>
+      </tr>
+      <tr>
+        <td>Xvfb</td>
+        <td>~2-4%</td>
+        <td>~50MB</td>
+      </tr>
+      <tr>
+        <td>Chromium (all processes)</td>
+        <td>~25-35%</td>
+        <td>~250-350MB</td>
+      </tr>
+      <tr>
+        <td>FFmpeg (x264 encoding)</td>
+        <td>~50-60%</td>
+        <td>~130-250MB</td>
+      </tr>
+      <tr>
+        <td><strong>Total per stream</strong></td>
+        <td><strong>~0.7-0.8 vCPU</strong></td>
+        <td><strong>~500-700MB</strong></td>
+      </tr>
+    </table>
+  </section>
+
+  <section id="secrets">
+    <h2>Secrets Management</h2>
+
+    <div class="warning-box">
+      <h4>Current State: Manual Management</h4>
+      <p>Secrets are stored in systemd service files and local directories. Works but not ideal for scale.</p>
+    </div>
+
+    <h3>Secret Locations</h3>
+    <table>
+      <tr>
+        <th>Secret</th>
+        <th>Location</th>
+        <th>Used By</th>
+      </tr>
+      <tr>
+        <td>SSH Private Key</td>
+        <td><code>~/api-secrets/hetzner-server/id_ed25519</code></td>
+        <td>Local machine for SSH</td>
+      </tr>
+      <tr>
+        <td>YouTube Stream Key</td>
+        <td><code>/etc/systemd/system/lofi-stream.service</code></td>
+        <td>Production server</td>
+      </tr>
+      <tr>
+        <td>Twitch Stream Key</td>
+        <td><code>/etc/systemd/system/lofi-stream-twitch.service</code></td>
+        <td>Production server</td>
+      </tr>
+    </table>
+
+    <h3>Stream Key in systemd Service</h3>
+    <pre><code># /etc/systemd/system/lofi-stream.service
+[Service]
+Environment=YOUTUBE_KEY=xxxx-xxxx-xxxx-xxxx-xxxx
+ExecStart=/opt/lofi-stream/stream.sh</code></pre>
+
+    <h3>Future: GitHub Secrets + CI/CD</h3>
+    <table>
+      <tr>
+        <th>Secret Name</th>
+        <th>Repository</th>
+        <th>Purpose</th>
+      </tr>
+      <tr>
+        <td><code>SSH_PRIVATE_KEY</code></td>
+        <td>All repos</td>
+        <td>Deploy via SSH</td>
+      </tr>
+      <tr>
+        <td><code>PROD_SERVER_IP</code></td>
+        <td>All repos</td>
+        <td>Production server</td>
+      </tr>
+      <tr>
+        <td><code>YOUTUBE_STREAM_KEY</code></td>
+        <td>lofi-stream-youtube</td>
+        <td>YouTube RTMP</td>
+      </tr>
+      <tr>
+        <td><code>TWITCH_STREAM_KEY</code></td>
+        <td>lofi-stream-twitch</td>
+        <td>Twitch RTMP</td>
+      </tr>
+    </table>
+  </section>
+
+  <section id="deployment">
+    <h2>Deployment Workflow</h2>
+
+    <h3>Current: Manual Deployment</h3>
+    <div class="mermaid">
+flowchart LR
+    EDIT["Edit code"] --> TEST["Test locally"] --> PUSH["git push"]
+    PUSH --> GH["GitHub"] --> PAGES["GitHub Pages"]
+    PUSH -.->|"Server changes"| SSH["SSH + copy"] --> RELOAD["Restart service"]
+    </div>
+
+    <h4>Visual Changes (auto-deploy)</h4>
+    <pre><code>cd ~/lofi-stream-youtube
+git add -A && git commit -m "Update visuals" && git push
+# Changes live in ~1 minute via GitHub Pages</code></pre>
+
+    <h4>Server Script Changes (manual)</h4>
+    <pre><code># Copy script to production
+scp -i ~/api-secrets/hetzner-server/id_ed25519 \
+    server/stream.sh root@135.181.150.82:/opt/lofi-stream/
+
+# Restart service
+ssh -i ~/api-secrets/hetzner-server/id_ed25519 root@135.181.150.82 \
+    "systemctl restart lofi-stream"</code></pre>
+
+    <h3>Future: Automated CI/CD</h3>
+    <pre><code># .github/workflows/deploy.yml (planned)
+name: Deploy Stream
+on:
+  push:
+    branches: [main]
+    paths: ['server/**']
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to production
+        uses: appleboy/ssh-action@v1
+        with:
+          host: \${{ secrets.PROD_SERVER_IP }}
+          username: root
+          key: \${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            systemctl restart lofi-stream</code></pre>
+  </section>
+
+  <section id="conflicts">
+    <h2>Potential Conflicts & Gotchas</h2>
+
+    <div class="danger-box">
+      <h4>CRITICAL: Stream Key Conflicts</h4>
+      <p>Both servers had the same stream keys. When both tried to stream to YouTube, they fought for the same RTMP endpoint causing instability.</p>
+      <p><strong>Solution:</strong> Dev server services are now disabled. Never run production stream keys on dev.</p>
+    </div>
+
+    <h3>Known Issues & Solutions</h3>
+    <table>
+      <tr>
+        <th>Issue</th>
+        <th>Cause</th>
+        <th>Solution</th>
+      </tr>
+      <tr>
+        <td>Stream key conflict</td>
+        <td>Same key on multiple servers</td>
+        <td>Disable services on dev, use test keys</td>
+      </tr>
+      <tr>
+        <td>Display collision</td>
+        <td>Two Xvfb on same display</td>
+        <td>Unique display numbers (:98, :99, :97...)</td>
+      </tr>
+      <tr>
+        <td>Audio routing issues</td>
+        <td>Wrong sink assignment</td>
+        <td>Named sinks, move-sink-input by PID</td>
+      </tr>
+      <tr>
+        <td>Chromium session conflict</td>
+        <td>Shared user data dir</td>
+        <td><code>--user-data-dir=/tmp/chromium-{platform}</code></td>
+      </tr>
+    </table>
+
+    <h3>Adding New Streams Checklist</h3>
+    <pre><code># New stream (e.g., Kick) checklist:
+1. Choose unique display number   -> :97
+2. Create unique audio sink       -> kick_speaker
+3. Create unique user data dir    -> /tmp/chromium-kick
+4. Create new systemd service     -> lofi-stream-kick.service
+5. Get platform stream key        -> Store in Environment=
+6. Create themed GitHub Pages     -> lofi-stream-kick repo</code></pre>
+  </section>
+
+  <section id="scaling">
+    <h2>Scaling Considerations</h2>
+
+    <h3>Current Capacity (CPX62)</h3>
+    <table>
+      <tr>
+        <th>Streams</th>
+        <th>CPU Usage</th>
+        <th>RAM Usage</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <td>2 (current)</td>
+        <td>~17%</td>
+        <td>~1.4GB</td>
+        <td>Running</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td>~50%</td>
+        <td>~5GB</td>
+        <td>Comfortable</td>
+      </tr>
+      <tr>
+        <td>16-20</td>
+        <td>~100%</td>
+        <td>~12GB</td>
+        <td>Max capacity</td>
+      </tr>
+    </table>
+
+    <h3>Scaling Strategy</h3>
+    <div class="mermaid">
+flowchart TB
+    P1["Phase 1: Single Server<br/>CPX62: 2-20 streams"]
+    P2["Phase 2: Horizontal Scale<br/>Multiple servers by tier"]
+    P3["Phase 3: Regional<br/>EU/US/APAC servers"]
+
+    P1 -->|"CPU > 80%"| P2 -->|"Latency matters"| P3
+    </div>
+
+    <h3>Automation Requirements for Scale</h3>
+    <ul>
+      <li>Centralized secrets (Vault or AWS Secrets Manager)</li>
+      <li>Infrastructure as Code (Terraform)</li>
+      <li>Configuration management (Ansible)</li>
+      <li>Monitoring & alerting (Prometheus + Grafana)</li>
+      <li>Health checks with auto-recovery</li>
+    </ul>
+  </section>
+
+  <section id="commands">
+    <h2>Quick Reference Commands</h2>
+
+    <h3>Production Server</h3>
+    <pre><code># Service management
+systemctl status lofi-stream lofi-stream-twitch
+systemctl restart lofi-stream
+journalctl -u lofi-stream -f        # Follow logs
+
+# Process check
+ps aux | grep ffmpeg
+
+# Audio debugging
+pactl list sinks short
+pactl list sink-inputs short</code></pre>
+
+    <h3>Deployment</h3>
+    <pre><code># Visual changes (auto via GitHub Pages)
+git add -A && git commit -m "Update" && git push
+
+# Server script changes
+scp -i ~/api-secrets/hetzner-server/id_ed25519 \
+    server/stream.sh root@135.181.150.82:/opt/lofi-stream/
+
+ssh -i ~/api-secrets/hetzner-server/id_ed25519 root@135.181.150.82 \
+    "systemctl restart lofi-stream"</code></pre>
+  </section>
+
+  <footer>
+    <p>
+      <a href="https://github.com/ldraney/lofi-stream-docs">lofi-stream-docs</a> |
+      <a href="https://github.com/ldraney/lofi-stream-youtube">lofi-stream-youtube</a> |
+      <a href="https://github.com/ldraney/lofi-stream-twitch">lofi-stream-twitch</a>
+    </p>
+    <p>Prod: 135.181.150.82 | Dev: 5.78.42.22 | Last updated: December 2025</p>
+  </footer>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#e94560',
+        primaryTextColor: '#eaeaea',
+        primaryBorderColor: '#0f3460',
+        lineColor: '#a0a0a0',
+        secondaryColor: '#16213e',
+        tertiaryColor: '#1a1a2e'
+      }
+    });
+  </script>
+</body>
+</html>
