@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Streaming Platforms - Lofi Stream Docs</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #1a1a2e;
+      --bg-secondary: #16213e;
+      --accent: #e94560;
+      --accent-secondary: #0f3460;
+      --text: #eaeaea;
+      --text-muted: #a0a0a0;
+      --success: #4ecca3;
+      --warning: #ffc107;
+      --border: #2a2a4a;
+      --youtube: #ff0000;
+      --twitch: #9146ff;
+      --kick: #53fc18;
+      --facebook: #1877f2;
+      --rumble: #85c742;
+      --tiktok: #000000;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, var(--accent), #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    nav {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      padding: 0.5rem 1rem;
+      background: var(--bg-secondary);
+      color: var(--text);
+      text-decoration: none;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    nav a:hover, nav a.active {
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+
+    h2 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent-secondary);
+    }
+
+    h3 {
+      color: var(--text);
+      margin: 1.5rem 0 0.75rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: var(--text-muted);
+    }
+
+    .mermaid {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      overflow-x: auto;
+    }
+
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .platform-card {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      border-left: 4px solid var(--border);
+      transition: all 0.3s;
+    }
+
+    .platform-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .platform-card.youtube { border-left-color: var(--youtube); }
+    .platform-card.twitch { border-left-color: var(--twitch); }
+    .platform-card.kick { border-left-color: var(--kick); }
+    .platform-card.facebook { border-left-color: var(--facebook); }
+    .platform-card.rumble { border-left-color: var(--rumble); }
+    .platform-card.dlive { border-left-color: #ffcc00; }
+    .platform-card.tiktok { border-left-color: #fe2c55; }
+    .platform-card.x { border-left-color: #fff; }
+
+    .platform-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .platform-icon {
+      font-size: 2rem;
+    }
+
+    .platform-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .platform-card .status {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: auto;
+    }
+
+    .status.live { background: var(--success); color: var(--bg); }
+    .status.priority { background: var(--warning); color: var(--bg); }
+    .status.future { background: var(--accent-secondary); color: var(--text); }
+
+    .platform-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .stat-value.good { color: var(--success); }
+    .stat-value.warn { color: var(--warning); }
+
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .feature {
+      padding: 0.2rem 0.5rem;
+      background: var(--accent-secondary);
+      border-radius: 4px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .feature.yes { background: rgba(78, 204, 163, 0.2); color: var(--success); }
+    .feature.no { background: rgba(233, 69, 96, 0.2); color: var(--accent); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--accent-secondary);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    td {
+      color: var(--text-muted);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .highlight-row {
+      background: rgba(78, 204, 163, 0.1);
+    }
+
+    td.good {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    td.no {
+      color: var(--accent);
+    }
+
+    .scaling-card {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 12px;
+      margin: 1rem 0;
+      border: 2px solid var(--border);
+    }
+
+    .scaling-card.recommended {
+      border-color: var(--success);
+    }
+
+    .scaling-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .scaling-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .scaling-cost {
+      font-size: 1.5rem;
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 0.5rem 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s;
+    }
+
+    .progress-fill.cpu { background: linear-gradient(90deg, var(--success), var(--warning)); }
+    .progress-fill.ram { background: linear-gradient(90deg, #6366f1, #8b5cf6); }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .option-card {
+      background: var(--bg-secondary);
+      padding: 1.25rem;
+      border-radius: 8px;
+      border: 2px solid var(--border);
+    }
+
+    .option-card.best {
+      border-color: var(--success);
+    }
+
+    .option-card h4 {
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .option-card ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .option-card li {
+      padding: 0.25rem 0;
+      padding-left: 1.25rem;
+      position: relative;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .option-card li::before {
+      content: '>';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    footer {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .tier-label {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .tier-1 { background: linear-gradient(135deg, #ffd700, #ff8c00); color: #000; }
+    .tier-2 { background: linear-gradient(135deg, #c0c0c0, #808080); color: #000; }
+    .tier-3 { background: linear-gradient(135deg, #cd7f32, #8b4513); color: #fff; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Streaming Platforms</h1>
+    <p class="subtitle">24+ RTMP platforms analyzed for true 24/7 live streaming</p>
+    <nav>
+      <a href="index.html">Overview & Roadmap</a>
+      <a href="platforms.html" class="active">Platforms</a>
+      <a href="architecture.html">Architecture</a>
+    </nav>
+  </header>
+
+  <section id="current-status">
+    <h2>Current Status</h2>
+    <p>Two streams running on a single Hetzner CX22 VPS (2 vCPU, 2GB RAM) for ~€4.50/month.</p>
+
+    <div class="scaling-card">
+      <div class="scaling-header">
+        <span class="scaling-title">CX22 Resource Usage (2 Streams)</span>
+        <span class="scaling-cost">€4.50/mo</span>
+      </div>
+
+      <div class="metric-row">
+        <span>CPU</span>
+        <span>78% used</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill cpu" style="width: 78%"></div>
+      </div>
+
+      <div class="metric-row">
+        <span>RAM</span>
+        <span>1.3GB / 2GB (68%)</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill ram" style="width: 68%"></div>
+      </div>
+
+      <p style="margin-top: 1rem; font-size: 0.9rem;">
+        <strong>Verdict:</strong> At capacity. Adding a 3rd stream would cause instability.
+      </p>
+    </div>
+  </section>
+
+  <section id="tier-1">
+    <h2>Tier 1: Major Platforms</h2>
+    <span class="tier-label tier-1">Highest Value</span>
+    <p>The big players with massive audiences and established monetization. All support true 24/7 live streaming via RTMP.</p>
+
+    <div class="platform-grid">
+      <div class="platform-card youtube">
+        <div class="platform-header">
+          <span class="platform-icon">📺</span>
+          <span class="platform-name">YouTube</span>
+          <span class="status live">LIVE</span>
+        </div>
+        <div class="platform-stats">
+          <div class="stat">
+            <span class="stat-label">Watch Time</span>
+            <span class="stat-value">4.1B hours</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">24/7 Streams</span>
+            <span class="stat-value good">Supported</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Revenue Split</span>
+            <span class="stat-value">55/45</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Requirements</span>
+            <span class="stat-value">1k subs, 4k hrs</span>
+          </div>
+        </div>
+        <div class="features">
+          <span class="feature yes">RTMP</span>
+          <span class="feature yes">Ads</span>
+          <span class="feature yes">Super Chat</span>
+          <span class="feature yes">Memberships</span>
+        </div>
+      </div>
+
+      <div class="platform-card twitch">
+        <div class="platform-header">
+          <span class="platform-icon">💜</span>
+          <span class="platform-name">Twitch</span>
+          <span class="status live">LIVE</span>
+        </div>
+        <div class="platform-stats">
+          <div class="stat">
+            <span class="stat-label">Watch Time</span>
+            <span class="stat-value">1.3B hours</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">24/7 Streams</span>
+            <span class="stat-value good">Supported</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Revenue Split</span>
+            <span class="stat-value">50/50</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Requirements</span>
+            <span class="stat-value">50 followers</span>
+          </div>
+        </div>
+        <div class="features">
+          <span class="feature yes">RTMP</span>
+          <span class="feature yes">Subs</span>
+          <span class="feature yes">Bits</span>
+          <span class="feature yes">Ads</span>
+        </div>
+      </div>
+
+      <div class="platform-card kick">
+        <div class="platform-header">
+          <span class="platform-icon">💚</span>
+          <span class="platform-name">Kick</span>
+          <span class="status priority">PRIORITY</span>
+        </div>
+        <div class="platform-stats">
+          <div class="stat">
+            <span class="stat-label">Watch Time</span>
+            <span class="stat-value">518M hours</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">24/7 Streams</span>
+            <span class="stat-value good">Supported</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Revenue Split</span>
+            <span class="stat-value good">95/5</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Requirements</span>
+            <span class="stat-value">None</span>
+          </div>
+        </div>
+        <div class="features">
+          <span class="feature yes">RTMP</span>
+          <span class="feature yes">Subs</span>
+          <span class="feature yes">Tips</span>
+          <span class="feature yes">Growing Fast</span>
+        </div>
+      </div>
+
+      <div class="platform-card rumble">
+        <div class="platform-header">
+          <span class="platform-icon">🟢</span>
+          <span class="platform-name">Rumble</span>
+          <span class="status priority">PRIORITY</span>
+        </div>
+        <div class="platform-stats">
+          <div class="stat">
+            <span class="stat-label">Monthly Users</span>
+            <span class="stat-value">80M+</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">24/7 Streams</span>
+            <span class="stat-value good">Supported</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Revenue Split</span>
+            <span class="stat-value good">60/40</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Requirements</span>
+            <span class="stat-value">None</span>
+          </div>
+        </div>
+        <div class="features">
+          <span class="feature yes">RTMP</span>
+          <span class="feature yes">Rants</span>
+          <span class="feature yes">Ads</span>
+          <span class="feature">Alt Audience</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tier-2">
+    <h2>Tier 2: Decentralized & Alternative</h2>
+    <span class="tier-label tier-2">High Potential</span>
+    <p>Decentralized platforms with better revenue splits and unique audiences. All support 24/7 RTMP streaming.</p>
+
+    <div class="platform-grid">
+      <div class="platform-card dlive">
+        <div class="platform-header">
+          <span class="platform-icon">🌟</span>
+          <span class="platform-name">DLive</span>
+          <span class="status priority">PRIORITY</span>
+        </div>
+        <div class="platform-stats">
+          <div class="stat">
+            <span class="stat-label">Model</span>
+            <span class="stat-value">Blockchain</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">24/7 Streams</span>
+            <span class="stat-value good">Supported</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Revenue Split</span>
+            <span class="stat-value good">90/10</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Currency</span>
+            <span class="stat-value">LINO (Crypto)</span>
+          </div>
+        </div>
+        <div class="features">
+          <span class="feature yes">RTMP</span>
+          <span class="feature yes">Crypto</span>
+          <span class="feature yes">Decentralized</span>
+          <span class="feature">Loyal Audience</span>
+        </div>
+      </div>
+
+      <div class="platform-card" style="border-left-color: #2196f3;">
+        <div class="platform-header">
+          <span class="platform-icon">🔷</span>
+          <span class="platform-name">Odysee/LBRY</span>
+          <span class="status priority">PRIORITY</span>
+        </div>
+        <div class="platform-stats">
+          <div class="stat">
+            <span class="stat-label">Model</span>
+            <span class="stat-value">Decentralized</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">24/7 Streams</span>
+            <span class="stat-value good">Supported</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Revenue</span>
+            <span class="stat-value good">LBC Crypto + Tips</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">RTMP Server</span>
+            <span class="stat-value">stream.odysee.com</span>
+          </div>
+        </div>
+        <div class="features">
+          <span class="feature yes">RTMP</span>
+          <span class="feature yes">Crypto</span>
+          <span class="feature yes">No Censorship</span>
+          <span class="feature">YouTube Alt</span>
+        </div>
+      </div>
+
+      <div class="platform-card" style="border-left-color: #19c8ff;">
+        <div class="platform-header">
+          <span class="platform-icon">🎬</span>
+          <span class="platform-name">Theta.tv</span>
+          <span class="status future">PLANNED</span>
+        </div>
+        <div class="platform-stats">
+          <div class="stat">
+            <span class="stat-label">Model</span>
+            <span class="stat-value">Blockchain CDN</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">24/7 Streams</span>
+            <span class="stat-value good">Supported</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Revenue</span>
+            <span class="stat-value good">TFUEL Crypto</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Multistream</span>
+            <span class="stat-value good">No Restrictions</span>
+          </div>
+        </div>
+        <div class="features">
+          <span class="feature yes">RTMP</span>
+          <span class="feature yes">Crypto</span>
+          <span class="feature yes">P2P CDN</span>
+          <span class="feature">Web3 Native</span>
+        </div>
+      </div>
+
+      <div class="platform-card">
+        <div class="platform-header">
+          <span class="platform-icon">🎮</span>
+          <span class="platform-name">Trovo</span>
+          <span class="status future">PLANNED</span>
+        </div>
+        <div class="platform-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">300% in 2023</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">24/7 Streams</span>
+            <span class="stat-value good">Supported</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Regions</span>
+            <span class="stat-value">SEA, LATAM</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Revenue</span>
+            <span class="stat-value">Mana, Subs</span>
+          </div>
+        </div>
+        <div class="features">
+          <span class="feature yes">RTMP</span>
+          <span class="feature yes">Subs</span>
+          <span class="feature yes">XP System</span>
+          <span class="feature">Gaming Focus</span>
+        </div>
+      </div>
+
+      <div class="platform-card" style="border-left-color: #0066dc;">
+        <div class="platform-header">
+          <span class="platform-icon">▶️</span>
+          <span class="platform-name">Dailymotion</span>
+          <span class="status future">FUTURE</span>
+        </div>
+        <div class="platform-stats">
+          <div class="stat">
+            <span class="stat-label">Users</span>
+            <span class="stat-value">300M+ monthly</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">24/7 Streams</span>
+            <span class="stat-value good">Supported</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Region</span>
+            <span class="stat-value">Strong in EU</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Revenue</span>
+            <span class="stat-value">Ads, Partner</span>
+          </div>
+        </div>
+        <div class="features">
+          <span class="feature yes">RTMP</span>
+          <span class="feature yes">Ads</span>
+          <span class="feature">European Alt</span>
+        </div>
+      </div>
+
+      <div class="platform-card" style="border-left-color: #1ab7ea;">
+        <div class="platform-header">
+          <span class="platform-icon">🎥</span>
+          <span class="platform-name">Vimeo</span>
+          <span class="status future">FUTURE</span>
+        </div>
+        <div class="platform-stats">
+          <div class="stat">
+            <span class="stat-label">Quality</span>
+            <span class="stat-value">Premium</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">24/7 Streams</span>
+            <span class="stat-value good">Supported</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Cost</span>
+            <span class="stat-value">Paid Plans</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">RTMP Outputs</span>
+            <span class="stat-value">Up to 20</span>
+          </div>
+        </div>
+        <div class="features">
+          <span class="feature yes">RTMP</span>
+          <span class="feature yes">Simulcast</span>
+          <span class="feature">Pro Quality</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tier-3">
+    <h2>Tier 3: Regional Platforms</h2>
+    <span class="tier-label tier-3">Geographic Markets</span>
+    <p>Regional platforms with dedicated audiences. All support RTMP ingest and 24/7 streaming.</p>
+
+    <h3>Asia-Pacific</h3>
+    <table>
+      <tr>
+        <th>Platform</th>
+        <th>Region</th>
+        <th>Focus</th>
+        <th>24/7</th>
+        <th>Notes</th>
+      </tr>
+      <tr>
+        <td><strong>SOOP (AfreecaTV)</strong></td>
+        <td>Korea</td>
+        <td>General</td>
+        <td class="good">Yes</td>
+        <td>Dominant after Twitch left Korea</td>
+      </tr>
+      <tr>
+        <td><strong>CHZZK (Naver)</strong></td>
+        <td>Korea</td>
+        <td>General</td>
+        <td class="good">Yes</td>
+        <td>New challenger backed by Naver</td>
+      </tr>
+      <tr>
+        <td><strong>kakaoTV</strong></td>
+        <td>Korea</td>
+        <td>General</td>
+        <td class="good">Yes</td>
+        <td>Kakao ecosystem integration</td>
+      </tr>
+      <tr>
+        <td><strong>Nimo TV</strong></td>
+        <td>SE Asia</td>
+        <td>Mobile Gaming</td>
+        <td class="good">Yes</td>
+        <td>Strong in Indonesia, Vietnam, Philippines</td>
+      </tr>
+      <tr>
+        <td><strong>Bilibili</strong></td>
+        <td>China</td>
+        <td>Anime/Gaming</td>
+        <td class="good">Yes</td>
+        <td>Bullet comments, Gen Z audience</td>
+      </tr>
+      <tr>
+        <td><strong>Douyu</strong></td>
+        <td>China</td>
+        <td>Gaming</td>
+        <td class="good">Yes</td>
+        <td>Gaming giant, may need business license</td>
+      </tr>
+      <tr>
+        <td><strong>Huya</strong></td>
+        <td>China</td>
+        <td>Gaming</td>
+        <td class="good">Yes</td>
+        <td>Owns Nimo TV globally</td>
+      </tr>
+      <tr>
+        <td><strong>FC2 Live</strong></td>
+        <td>Japan</td>
+        <td>General</td>
+        <td class="good">Yes</td>
+        <td>Japanese streaming platform</td>
+      </tr>
+    </table>
+
+    <h3>Russia & Eastern Europe</h3>
+    <table>
+      <tr>
+        <th>Platform</th>
+        <th>Region</th>
+        <th>Users</th>
+        <th>24/7</th>
+        <th>Notes</th>
+      </tr>
+      <tr>
+        <td><strong>VK Live</strong></td>
+        <td>Russia/CIS</td>
+        <td>100M+</td>
+        <td class="good">Yes</td>
+        <td>Largest Russian social platform</td>
+      </tr>
+      <tr>
+        <td><strong>OK.ru (Odnoklassniki)</strong></td>
+        <td>Russia/CIS</td>
+        <td>40M+</td>
+        <td class="good">Yes</td>
+        <td>Older demographic</td>
+      </tr>
+      <tr>
+        <td><strong>GoodGame</strong></td>
+        <td>Russia</td>
+        <td>Gaming</td>
+        <td class="good">Yes</td>
+        <td>Gaming-focused</td>
+      </tr>
+    </table>
+
+    <h3>Niche & Specialized</h3>
+    <table>
+      <tr>
+        <th>Platform</th>
+        <th>Focus</th>
+        <th>24/7</th>
+        <th>Notes</th>
+      </tr>
+      <tr>
+        <td><strong>Picarto.TV</strong></td>
+        <td>Art/Creative</td>
+        <td class="good">Yes</td>
+        <td>Art streaming community</td>
+      </tr>
+      <tr>
+        <td><strong>Steam Broadcasting</strong></td>
+        <td>Gaming</td>
+        <td class="good">Yes</td>
+        <td>Integrated with Steam</td>
+      </tr>
+      <tr>
+        <td><strong>Vaughn Live</strong></td>
+        <td>General</td>
+        <td class="good">Yes</td>
+        <td>Long-running platform</td>
+      </tr>
+      <tr>
+        <td><strong>Mobcrush</strong></td>
+        <td>Mobile Gaming</td>
+        <td class="good">Yes</td>
+        <td>Mobile-focused streams</td>
+      </tr>
+      <tr>
+        <td><strong>Mixcloud</strong></td>
+        <td>Audio/DJ</td>
+        <td class="good">Yes</td>
+        <td>Perfect for lofi - audio-first platform</td>
+      </tr>
+    </table>
+  </section>
+
+  <section id="skip">
+    <h2>Platforms to Skip</h2>
+    <p>These platforms don't support 24/7 streaming or aren't suitable for lofi.</p>
+
+    <table>
+      <tr>
+        <th>Platform</th>
+        <th>Reason</th>
+      </tr>
+      <tr>
+        <td>TikTok Live</td>
+        <td>No 24/7 support - designed for short sessions</td>
+      </tr>
+      <tr>
+        <td>Instagram Live</td>
+        <td>No 24/7 support - 4 hour limit</td>
+      </tr>
+      <tr>
+        <td>LinkedIn Live</td>
+        <td>B2B focus - wrong audience for lofi</td>
+      </tr>
+      <tr>
+        <td>Facebook Live</td>
+        <td>Limited 24/7 support, older demographic, not the vibe</td>
+      </tr>
+    </table>
+  </section>
+
+  <section id="scaling">
+    <h2>Scaling Options</h2>
+
+    <div class="mermaid">
+flowchart LR
+    subgraph current["Current (CX22)"]
+        S1["YouTube"]
+        S2["Twitch"]
+    end
+
+    subgraph option_b["Option B: CPX62"]
+        S3["+ Kick"]
+        S4["+ Rumble"]
+        S5["+ DLive"]
+        S6["+ Odysee"]
+        S7["+ 12 more..."]
+    end
+
+    subgraph option_c["Option C: Restream"]
+        RS["Restream.io"]
+        RS --> YT2["YouTube"]
+        RS --> TW2["Twitch"]
+        RS --> K2["Kick"]
+        RS --> R2["+ 30 platforms"]
+    end
+
+    current -->|"Upgrade $42.99/mo"| option_b
+    current -->|"Add Service"| option_c
+    </div>
+
+    <div class="option-grid">
+      <div class="option-card">
+        <h4>Option A: Stay on CX22</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">€4.50/mo - 2 streams max</p>
+        <ul>
+          <li>Already at 78% CPU</li>
+          <li>No room for expansion</li>
+          <li>Risk of instability</li>
+        </ul>
+      </div>
+
+      <div class="option-card best">
+        <h4>Option B: Upgrade to CPX62</h4>
+        <p style="color: var(--success); font-size: 0.9rem;">$42.99/mo - 16-20 streams</p>
+        <ul>
+          <li>16 AMD vCPU, 32GB RAM</li>
+          <li>True live browser rendering</li>
+          <li>Cover ALL major platforms</li>
+          <li>~$2.15/stream at 20 streams</li>
+        </ul>
+      </div>
+
+      <div class="option-card">
+        <h4>Option C: Restream.io</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Simulcast approach</p>
+        <ul>
+          <li>Keep 2 sources on VPS</li>
+          <li>Restream to 30+ platforms</li>
+          <li>Same content everywhere</li>
+          <li>Less unique per platform</li>
+        </ul>
+      </div>
+
+      <div class="option-card">
+        <h4>Option D: CX32 (Budget)</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">€7.50/mo - 4-5 streams</p>
+        <ul>
+          <li>4 vCPU, 8GB RAM</li>
+          <li>Add Kick + Rumble only</li>
+          <li>~€1.50/stream</li>
+          <li>Good stepping stone</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Server Scaling Costs (Live Browser Rendering)</h3>
+    <p>Each stream uses ~0.7 vCPU with live browser-based rendering (Xvfb + Chromium + FFmpeg).</p>
+    <table>
+      <tr>
+        <th>Server</th>
+        <th>vCPU</th>
+        <th>RAM</th>
+        <th>Est. Streams</th>
+        <th>Cost/mo</th>
+        <th>Cost/Stream</th>
+      </tr>
+      <tr>
+        <td>CX22 (current)</td>
+        <td>2</td>
+        <td>2GB</td>
+        <td>2</td>
+        <td>€4.50</td>
+        <td>€2.25</td>
+      </tr>
+      <tr>
+        <td>CX32</td>
+        <td>4</td>
+        <td>8GB</td>
+        <td>4-5</td>
+        <td>€7.50</td>
+        <td>€1.50-1.88</td>
+      </tr>
+      <tr>
+        <td>CX42</td>
+        <td>8</td>
+        <td>16GB</td>
+        <td>8-10</td>
+        <td>€14</td>
+        <td>€1.40-1.75</td>
+      </tr>
+      <tr>
+        <td>CX52</td>
+        <td>16</td>
+        <td>32GB</td>
+        <td>16-20</td>
+        <td>€28</td>
+        <td>€1.40-1.75</td>
+      </tr>
+      <tr class="highlight-row">
+        <td><strong>CPX62 (AMD)</strong></td>
+        <td><strong>16</strong></td>
+        <td><strong>32GB</strong></td>
+        <td><strong>16-20</strong></td>
+        <td><strong>$42.99</strong></td>
+        <td><strong>$2.15-2.69</strong></td>
+      </tr>
+    </table>
+
+    <h3>Platform Count Summary</h3>
+    <table>
+      <tr>
+        <th>Tier</th>
+        <th>Platforms</th>
+        <th>Count</th>
+      </tr>
+      <tr>
+        <td>Tier 1 - Major</td>
+        <td>YouTube, Twitch, Kick, Rumble</td>
+        <td>4</td>
+      </tr>
+      <tr>
+        <td>Tier 2 - Alternative</td>
+        <td>DLive, Odysee, Theta.tv, Trovo, Dailymotion, Vimeo</td>
+        <td>6</td>
+      </tr>
+      <tr>
+        <td>Tier 3 - Regional</td>
+        <td>SOOP, CHZZK, Nimo TV, Bilibili, VK Live, etc.</td>
+        <td>14+</td>
+      </tr>
+      <tr class="highlight-row">
+        <td><strong>Total 24/7 RTMP</strong></td>
+        <td></td>
+        <td><strong>24+</strong></td>
+      </tr>
+    </table>
+  </section>
+
+  <section id="priority">
+    <h2>Expansion Priority</h2>
+
+    <div class="mermaid">
+flowchart TB
+    subgraph now["Now (Live)"]
+        YT["YouTube<br/>4.1B hours"]
+        TW["Twitch<br/>1.3B hours"]
+    end
+
+    subgraph phase1["Phase 1: High Value"]
+        KI["Kick<br/>95/5 split!"]
+        RU["Rumble<br/>Alt audience"]
+    end
+
+    subgraph phase2["Phase 2: Decentralized"]
+        DL["DLive<br/>90/10 crypto"]
+        OD["Odysee<br/>No censorship"]
+    end
+
+    subgraph phase3["Phase 3: Regional"]
+        TH["Theta.tv"]
+        TR["Trovo"]
+        VK["VK Live"]
+        NI["Nimo TV"]
+    end
+
+    now --> phase1
+    phase1 --> phase2
+    phase2 --> phase3
+    </div>
+
+    <table>
+      <tr>
+        <th>Priority</th>
+        <th>Platform</th>
+        <th>Why</th>
+        <th>Effort</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td><strong>Kick</strong></td>
+        <td>95/5 revenue split, growing fast, creator-friendly</td>
+        <td>Low - just need account + stream key</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><strong>Rumble</strong></td>
+        <td>Alt audience, 24/7 friendly, less competition</td>
+        <td>Low - RTMP ready</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><strong>DLive</strong></td>
+        <td>Crypto community, 90/10 split, loyal audience</td>
+        <td>Low - RTMP ready</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><strong>Odysee</strong></td>
+        <td>Decentralized YouTube alt, 24/7 proven (RT runs on it)</td>
+        <td>Low - stream.odysee.com RTMP</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><strong>Theta.tv</strong></td>
+        <td>Web3 native, P2P CDN, TFUEL rewards</td>
+        <td>Low - no multistream restrictions</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td><strong>Trovo</strong></td>
+        <td>Growing 300%/year in SEA/LATAM, gamification</td>
+        <td>Low - RTMP ready</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td><strong>VK Live</strong></td>
+        <td>100M+ Russian users, untapped market</td>
+        <td>Low - RTMP via Restream integration</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td><strong>Nimo TV</strong></td>
+        <td>SE Asia dominance (Indonesia, Vietnam, Philippines)</td>
+        <td>Low - Huya's global platform</td>
+      </tr>
+    </table>
+
+    <h3>With CPX62: All 8 Priority Platforms + Room for More</h3>
+    <p>At 16-20 stream capacity, CPX62 can run all priority platforms simultaneously with unique themes per platform,
+    plus still have capacity for regional expansion (SOOP, Bilibili, etc.).</p>
+  </section>
+
+  <footer>
+    <p>
+      <a href="https://github.com/ldraney/lofi-stream-docs">lofi-stream-docs</a> |
+      <a href="https://github.com/ldraney/lofi-stream-youtube">lofi-stream-youtube</a> |
+      <a href="https://github.com/ldraney/lofi-stream-twitch">lofi-stream-twitch</a>
+    </p>
+    <p>Last updated: December 2025</p>
+  </footer>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#e94560',
+        primaryTextColor: '#eaeaea',
+        primaryBorderColor: '#0f3460',
+        lineColor: '#a0a0a0',
+        secondaryColor: '#16213e',
+        tertiaryColor: '#1a1a2e',
+        background: '#1a1a2e',
+        mainBkg: '#16213e',
+        nodeBorder: '#0f3460',
+        clusterBkg: '#16213e',
+        clusterBorder: '#0f3460',
+        titleColor: '#e94560',
+        edgeLabelBackground: '#16213e'
+      },
+      flowchart: {
+        curve: 'basis',
+        padding: 20
+      }
+    });
+  </script>
+</body>
+</html>
