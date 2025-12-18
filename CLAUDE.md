@@ -28,10 +28,11 @@ lofi-stream-docs/
 ├── architecture.html      # System architecture diagrams
 ├── platforms.html         # Platform comparison (24+ destinations)
 ├── devops.html            # DevOps documentation
-└── scripts/               # Dev server management scripts
+└── scripts/               # Server management scripts
     ├── setup-dev-user.sh  # Creates lofidev user on dev server
     ├── reset-dev.sh       # Daily reset script (installed to /opt/scripts/)
-    └── install-dev-reset.sh # Installs cron job for daily reset
+    ├── install-dev-reset.sh # Installs cron job for daily reset
+    └── check-streams.sh   # Health check for production streams
 ```
 
 ## Dev Server Usage
@@ -103,6 +104,9 @@ cd ~/lofi-stream-docs && python3 -m http.server 8080
 
 # Check production streams
 ssh root@135.181.150.82 'systemctl status lofi-stream lofi-stream-twitch'
+
+# Run health check on production
+ssh root@135.181.150.82 '/opt/scripts/check-streams.sh'
 
 # Check dev server status
 ssh lofidev@5.78.42.22 'ls -la ~/streams/'

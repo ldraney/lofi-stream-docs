@@ -33,7 +33,9 @@ python3 -m http.server 8080
 ## What's in the Docs
 
 - **index.html** - Project overview, unified roadmap, stream comparison
-- **architecture.html** - Detailed system diagrams (TODO)
+- **platforms.html** - Platform comparison (24+ RTMP destinations)
+- **architecture.html** - System architecture diagrams
+- **devops.html** - Server setup, deployment, and operations
 
 ## Infrastructure
 
@@ -57,8 +59,9 @@ python3 -m http.server 8080
 |-------|------|--------|
 | 1 | Foundation - YouTube | Done |
 | 2 | Expansion - Twitch | Done |
-| 3 | Documentation & Operations | In Progress |
-| 4 | Visual & Audio Polish | Planned |
-| 5 | Multi-Platform Expansion | Planned |
-| 6 | Monetization | Planned |
-| 7 | Interactive Features | Vision |
+| 3 | Scale Up Infrastructure | Done |
+| 4 | Documentation & DevOps | Done |
+| 5 | Multi-Platform Expansion | Next |
+| 6 | Visual & Audio Polish | Planned |
+| 7 | Monetization | Planned |
+| 8 | Interactive Features | Vision |
