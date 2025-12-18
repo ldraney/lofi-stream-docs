@@ -253,6 +253,71 @@
     </div>
   </section>
 
+  <section id="dev-server">
+    <h2>Dev Server Management</h2>
+    <p>The dev server (CX22) is used for testing new themes and features before production deployment.</p>
+
+    <h3>Dev User Setup</h3>
+    <p>A dedicated <code>lofidev</code> user isolates testing from the system. Set up once per server:</p>
+    <pre><code># Copy scripts to server
+scp scripts/*.sh root@5.78.42.22:/tmp/
+
+# SSH in and run setup
+ssh root@5.78.42.22
+bash /tmp/setup-dev-user.sh
+bash /tmp/install-dev-reset.sh</code></pre>
+
+    <h3>Daily Auto-Reset</h3>
+    <p>The dev server resets daily at 4 AM UTC to keep it clean:</p>
+    <ul>
+      <li>Kills all lofidev processes (preserves SSH sessions)</li>
+      <li>Cleans home directory (preserves .ssh, .bashrc)</li>
+      <li>Recreates empty <code>~/streams/</code> directory</li>
+    </ul>
+
+    <h4>Manual Reset</h4>
+    <pre><code># Trigger reset manually
+ssh root@5.78.42.22 '/opt/scripts/reset-dev.sh'
+
+# View reset logs
+ssh root@5.78.42.22 'cat /var/log/dev-reset.log'</code></pre>
+
+    <h3>Testing Workflow</h3>
+    <p>From <code>lofi-stream-youtube</code> or <code>lofi-stream-twitch</code> repos:</p>
+    <pre><code>make deploy-dev    # Deploy repo to dev server
+make cleanup-dev   # Remove repo from dev server
+make dev-status    # Show what's deployed</code></pre>
+
+    <h3>Scripts Reference</h3>
+    <table>
+      <tr>
+        <th>Script</th>
+        <th>Location</th>
+        <th>Purpose</th>
+      </tr>
+      <tr>
+        <td><code>setup-dev-user.sh</code></td>
+        <td>lofi-stream-docs/scripts/</td>
+        <td>Creates lofidev user with proper permissions</td>
+      </tr>
+      <tr>
+        <td><code>reset-dev.sh</code></td>
+        <td>/opt/scripts/ (on server)</td>
+        <td>Kills processes, cleans home directory</td>
+      </tr>
+      <tr>
+        <td><code>install-dev-reset.sh</code></td>
+        <td>lofi-stream-docs/scripts/</td>
+        <td>Installs reset script + cron job</td>
+      </tr>
+      <tr>
+        <td><code>check-streams.sh</code></td>
+        <td>lofi-stream-docs/scripts/</td>
+        <td>Health check for production streams</td>
+      </tr>
+    </table>
+  </section>
+
   <section id="repos">
     <h2>Repository Structure</h2>
 
@@ -638,6 +703,11 @@ flowchart TB
 
   <section id="commands">
     <h2>Quick Reference Commands</h2>
+
+    <h3>Health Check</h3>
+    <pre><code># Run full health check (copy script to server first)
+scp scripts/check-streams.sh root@135.181.150.82:/opt/scripts/
+ssh root@135.181.150.82 '/opt/scripts/check-streams.sh'</code></pre>
 
     <h3>Production Server</h3>
     <pre><code># Service management
