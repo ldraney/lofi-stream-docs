@@ -6,8 +6,10 @@ Central documentation hub and DevOps scripts for the lofi-stream project.
 
 ```
 ~/
-├── lofi-stream-youtube/     # Night city theme → YouTube
-├── lofi-stream-twitch/      # Coffee shop theme → Twitch
+├── lofi-stream-youtube/     # Night city theme → YouTube (:99)
+├── lofi-stream-twitch/      # Coffee shop theme → Twitch (:98)
+├── lofi-stream-kick/        # Arcade theme → Kick (:97)
+├── lofi-stream-rumble/      # Library theme → Rumble (:96)
 └── lofi-stream-docs/        # This repo (documentation + DevOps)
 ```
 
@@ -41,7 +43,7 @@ The dev server (5.78.42.22) uses a dedicated `lofidev` user for testing.
 
 ### Deploy/Test from Stream Repos
 
-From `lofi-stream-youtube` or `lofi-stream-twitch`:
+From any stream repo (`lofi-stream-youtube`, `lofi-stream-twitch`, `lofi-stream-kick`, `lofi-stream-rumble`):
 ```bash
 make deploy-dev    # Deploy repo to dev server
 make cleanup-dev   # Remove repo from dev server
@@ -117,3 +119,14 @@ ssh lofidev@5.78.42.22 'ls -la ~/streams/'
 - **Docs:** https://ldraney.github.io/lofi-stream-docs/
 - **YouTube Page:** https://ldraney.github.io/lofi-stream-youtube/
 - **Twitch Page:** https://ldraney.github.io/lofi-stream-twitch/
+- **Kick Page:** https://ldraney.github.io/lofi-stream-kick/
+- **Rumble Page:** https://ldraney.github.io/lofi-stream-rumble/
+
+## Stream Configuration
+
+| Platform | Display | Audio Sink | Bitrate | Status |
+|----------|---------|------------|---------|--------|
+| YouTube | :99 | virtual_speaker | 1.5 Mbps | LIVE |
+| Twitch | :98 | twitch_speaker | 2.5 Mbps | LIVE |
+| Kick | :97 | kick_speaker | 6.0 Mbps | Ready |
+| Rumble | :96 | rumble_speaker | 4.5 Mbps | Ready |

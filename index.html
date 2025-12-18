@@ -18,6 +18,8 @@
       --border: #2a2a4a;
       --youtube: #ff0000;
       --twitch: #9146ff;
+      --kick: #53fc18;
+      --rumble: #85c742;
     }
 
     * {
@@ -134,6 +136,14 @@
 
     .project-card.twitch {
       border-left: 4px solid var(--twitch);
+    }
+
+    .project-card.kick {
+      border-left: 4px solid var(--kick);
+    }
+
+    .project-card.rumble {
+      border-left: 4px solid var(--rumble);
     }
 
     .project-card.docs {
@@ -352,7 +362,7 @@
 
   <section id="projects">
     <h2>Projects</h2>
-    <p>Three interconnected repositories powering 24/7 lofi streams to YouTube and Twitch from a single Hetzner VPS.</p>
+    <p>Five interconnected repositories powering 24/7 lofi streams to multiple platforms from a single Hetzner VPS.</p>
 
     <div class="project-grid">
       <div class="project-card youtube">
@@ -399,6 +409,50 @@
         </div>
       </div>
 
+      <div class="project-card kick">
+        <div class="project-header">
+          <span class="project-icon">🕹️</span>
+          <span class="project-title">lofi-stream-kick</span>
+          <span class="status dev">READY</span>
+        </div>
+        <p class="project-description">
+          Arcade/retro gaming theme with neon cabinet, CRT visualizer, and chiptune lofi.
+          Ready to stream 24/7 to Kick at 720p.
+        </p>
+        <div style="margin-bottom: 1rem;">
+          <span class="tech-badge">HTML/CSS</span>
+          <span class="tech-badge">Web Audio API</span>
+          <span class="tech-badge">ffmpeg</span>
+          <span class="tech-badge">RTMPS</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/ldraney/lofi-stream-kick" target="_blank">GitHub</a>
+          <a href="https://ldraney.github.io/lofi-stream-kick/" target="_blank">Live Page</a>
+        </div>
+      </div>
+
+      <div class="project-card rumble">
+        <div class="project-header">
+          <span class="project-icon">📖</span>
+          <span class="project-title">lofi-stream-rumble</span>
+          <span class="status dev">READY</span>
+        </div>
+        <p class="project-description">
+          Cozy library/study theme with bookshelf, fireplace, and classical-inspired lofi.
+          Ready to stream 24/7 to Rumble at 720p.
+        </p>
+        <div style="margin-bottom: 1rem;">
+          <span class="tech-badge">HTML/CSS</span>
+          <span class="tech-badge">Web Audio API</span>
+          <span class="tech-badge">ffmpeg</span>
+          <span class="tech-badge">RTMP</span>
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/ldraney/lofi-stream-rumble" target="_blank">GitHub</a>
+          <a href="https://ldraney.github.io/lofi-stream-rumble/" target="_blank">Live Page</a>
+        </div>
+      </div>
+
       <div class="project-card docs">
         <div class="project-header">
           <span class="project-icon">📚</span>
@@ -427,55 +481,44 @@
     <div class="mermaid">
 flowchart TB
     subgraph repos["GitHub Repositories"]
-        YT_REPO["lofi-stream-youtube<br/>🌃 Night City Theme"]
-        TW_REPO["lofi-stream-twitch<br/>☕ Coffee Shop Theme"]
-        DOCS_REPO["lofi-stream-docs<br/>📚 Documentation Hub"]
+        YT_REPO["lofi-stream-youtube<br/>🌃 Night City"]
+        TW_REPO["lofi-stream-twitch<br/>☕ Coffee Shop"]
+        KI_REPO["lofi-stream-kick<br/>🕹️ Arcade"]
+        RU_REPO["lofi-stream-rumble<br/>📖 Library"]
     end
 
-    subgraph pages["GitHub Pages (Static Hosting)"]
+    subgraph pages["GitHub Pages"]
         YT_PAGE["ldraney.github.io/lofi-stream-youtube"]
         TW_PAGE["ldraney.github.io/lofi-stream-twitch"]
-        DOCS_PAGE["ldraney.github.io/lofi-stream-docs"]
+        KI_PAGE["ldraney.github.io/lofi-stream-kick"]
+        RU_PAGE["ldraney.github.io/lofi-stream-rumble"]
     end
 
     subgraph vps["Hetzner CPX62 (135.181.150.82)"]
-        subgraph yt_stack["YouTube Stream Stack"]
-            XVFB1["Xvfb :99"]
-            CHROME1["Chromium"]
-            PULSE1["PulseAudio<br/>virtual_speaker"]
-            FF1["FFmpeg"]
-        end
-        subgraph tw_stack["Twitch Stream Stack"]
-            XVFB2["Xvfb :98"]
-            CHROME2["Chromium"]
-            PULSE2["PulseAudio<br/>twitch_speaker"]
-            FF2["FFmpeg"]
-        end
+        STREAMS["4 Stream Stacks<br/>:99 YouTube | :98 Twitch<br/>:97 Kick | :96 Rumble"]
     end
 
     subgraph platforms["Streaming Platforms"]
-        YOUTUBE["YouTube Live<br/>RTMP :1935"]
-        TWITCH["Twitch Live<br/>RTMP :1935"]
+        YOUTUBE["YouTube"]
+        TWITCH["Twitch"]
+        KICK["Kick"]
+        RUMBLE["Rumble"]
     end
 
     YT_REPO --> YT_PAGE
     TW_REPO --> TW_PAGE
-    DOCS_REPO --> DOCS_PAGE
+    KI_REPO --> KI_PAGE
+    RU_REPO --> RU_PAGE
 
-    YT_PAGE -->|"Rendered by"| CHROME1
-    TW_PAGE -->|"Rendered by"| CHROME2
+    YT_PAGE --> STREAMS
+    TW_PAGE --> STREAMS
+    KI_PAGE --> STREAMS
+    RU_PAGE --> STREAMS
 
-    XVFB1 --> CHROME1
-    CHROME1 --> PULSE1
-    XVFB1 --> FF1
-    PULSE1 --> FF1
-    FF1 -->|"RTMP"| YOUTUBE
-
-    XVFB2 --> CHROME2
-    CHROME2 --> PULSE2
-    XVFB2 --> FF2
-    PULSE2 --> FF2
-    FF2 -->|"RTMP"| TWITCH
+    STREAMS --> YOUTUBE
+    STREAMS --> TWITCH
+    STREAMS --> KICK
+    STREAMS --> RUMBLE
     </div>
   </section>
 
@@ -558,22 +601,25 @@ timeline
       </ul>
     </div>
 
-    <h3>Next Phase</h3>
+    <h3>Current Phase</h3>
 
-    <div class="phase future">
+    <div class="phase current">
       <div class="phase-header">
         <span class="phase-title">Phase 5: Multi-Platform Expansion</span>
-        <span class="phase-status">Q1 2026</span>
+        <span class="phase-status">In Progress</span>
       </div>
       <ul>
-        <li>Add Kick stream (95/5 revenue split)</li>
-        <li>Add Rumble stream (alt audience)</li>
+        <li class="done">Create Kick repo with arcade theme</li>
+        <li class="done">Create Rumble repo with library theme</li>
+        <li>Create Kick account and start streaming</li>
+        <li>Create Rumble account (5 followers req) and start streaming</li>
         <li>Add DLive stream (90/10 crypto)</li>
         <li>Add Odysee stream (decentralized)</li>
-        <li>Unique themes per platform</li>
         <li>Target: 8 platforms on CPX62</li>
       </ul>
     </div>
+
+    <h3>Future Phases</h3>
 
     <div class="phase future">
       <div class="phase-header">
@@ -622,53 +668,66 @@ timeline
     <table>
       <tr>
         <th>Aspect</th>
-        <th>YouTube (Night City)</th>
-        <th>Twitch (Coffee Shop)</th>
+        <th>YouTube</th>
+        <th>Twitch</th>
+        <th>Kick</th>
+        <th>Rumble</th>
       </tr>
       <tr>
         <td>Theme</td>
-        <td>🌃 Rainy night city, neon glow</td>
-        <td>☕ Cozy cafe, warm amber tones</td>
+        <td>🌃 Night City</td>
+        <td>☕ Coffee Shop</td>
+        <td>🕹️ Arcade</td>
+        <td>📖 Library</td>
       </tr>
       <tr>
         <td>Color Palette</td>
-        <td>Cool blues, purples, pink neon</td>
-        <td>Warm browns, amber, soft yellows</td>
+        <td>Cool blues, purple</td>
+        <td>Warm browns, amber</td>
+        <td>Neon pink, cyan</td>
+        <td>Deep brown, gold</td>
       </tr>
       <tr>
         <td>Audio Style</td>
-        <td>Lo-fi pads, brown noise rain</td>
-        <td>Jazz 7th chords, walking bass</td>
-      </tr>
-      <tr>
-        <td>Visual Elements</td>
-        <td>Rain drops, moon, city skyline</td>
-        <td>Bookshelf, cat, candle, plant</td>
+        <td>Lo-fi pads, rain</td>
+        <td>Jazz 7th chords</td>
+        <td>Chiptune, 8-bit</td>
+        <td>Classical piano</td>
       </tr>
       <tr>
         <td>Display</td>
         <td>:99</td>
         <td>:98</td>
+        <td>:97</td>
+        <td>:96</td>
       </tr>
       <tr>
         <td>Audio Sink</td>
         <td>virtual_speaker</td>
         <td>twitch_speaker</td>
+        <td>kick_speaker</td>
+        <td>rumble_speaker</td>
       </tr>
       <tr>
         <td>Resolution</td>
         <td>720p @ 24fps</td>
+        <td>720p @ 24fps</td>
         <td>720p @ 30fps</td>
+        <td>720p @ 24fps</td>
       </tr>
       <tr>
         <td>Bitrate</td>
         <td>1.5 Mbps</td>
         <td>2.5 Mbps</td>
+        <td>6.0 Mbps</td>
+        <td>4.5 Mbps</td>
       </tr>
       <tr>
-        <td>RTMP Endpoint</td>
-        <td>rtmp://a.rtmp.youtube.com/live2</td>
-        <td>rtmp://live.twitch.tv/app</td>
+        <td>Status</td>
+        <td>LIVE</td>
+        <td>LIVE</td>
+        <td>Ready</td>
+        <td>Ready</td>
       </tr>
     </table>
   </section>
