@@ -13,6 +13,24 @@ Central documentation hub and DevOps scripts for the lofi-stream project.
 └── lofi-stream-docs/        # This repo (documentation + DevOps)
 ```
 
+## Secrets
+
+All secrets stored in `~/api-secrets/lofi-stream/` (private repo):
+
+```
+lofi-stream/
+├── hetzner/
+│   ├── prod.env    # Production IP, user, SSH key path
+│   └── dev.env     # Dev IP, users, SSH key path
+└── platforms/
+    ├── youtube.env # Stream key + RTMP URL
+    ├── twitch.env  # Stream key + RTMP URL
+    ├── kick.env    # Stream key + RTMP URL (pending)
+    └── rumble.env  # Stream key + RTMP URL (pending)
+```
+
+SSH key: `~/api-secrets/hetzner-server/id_ed25519`
+
 ## Infrastructure
 
 | Server | IP | Purpose | Cost |
