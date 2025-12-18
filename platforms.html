@@ -401,32 +401,32 @@
 
   <section id="current-status">
     <h2>Current Status</h2>
-    <p>Two streams running on a Hetzner CPX62 VPS (16 vCPU AMD, 32GB RAM) for $42.99/month with massive expansion capacity.</p>
+    <p>Three streams running on a Hetzner CPX62 VPS (16 vCPU AMD, 32GB RAM) for $42.99/month with massive expansion capacity.</p>
 
     <div class="scaling-card recommended">
       <div class="scaling-header">
-        <span class="scaling-title">CPX62 Resource Usage (2 Streams)</span>
+        <span class="scaling-title">CPX62 Resource Usage (3 Streams)</span>
         <span class="scaling-cost">$42.99/mo</span>
       </div>
 
       <div class="metric-row">
         <span>CPU</span>
-        <span>17% used (83% available)</span>
+        <span>25% used (75% available)</span>
       </div>
       <div class="progress-bar">
-        <div class="progress-fill cpu" style="width: 17%"></div>
+        <div class="progress-fill cpu" style="width: 25%"></div>
       </div>
 
       <div class="metric-row">
         <span>RAM</span>
-        <span>1.4GB / 32GB (4%)</span>
+        <span>2.1GB / 32GB (7%)</span>
       </div>
       <div class="progress-bar">
-        <div class="progress-fill ram" style="width: 4%"></div>
+        <div class="progress-fill ram" style="width: 7%"></div>
       </div>
 
       <p style="margin-top: 1rem; font-size: 0.9rem;">
-        <strong>Verdict:</strong> Massive headroom. Can add 14+ more streams with true live browser rendering.
+        <strong>Verdict:</strong> Massive headroom. Can add 13+ more streams with true live browser rendering.
       </p>
     </div>
   </section>
@@ -505,7 +505,7 @@
         <div class="platform-header">
           <span class="platform-icon">💚</span>
           <span class="platform-name">Kick</span>
-          <span class="status priority">PRIORITY</span>
+          <span class="status live">LIVE</span>
         </div>
         <div class="platform-stats">
           <div class="stat">
@@ -946,14 +946,14 @@ flowchart LR
     subgraph current["Current (CPX62)"]
         S1["YouTube"]
         S2["Twitch"]
+        S3["Kick"]
     end
 
     subgraph option_b["Option B: CPX62"]
-        S3["+ Kick"]
         S4["+ Rumble"]
         S5["+ DLive"]
         S6["+ Odysee"]
-        S7["+ 12 more..."]
+        S7["+ 11 more..."]
     end
 
     subgraph option_c["Option C: Restream"]
@@ -964,7 +964,7 @@ flowchart LR
         RS --> R2["+ 30 platforms"]
     end
 
-    current -->|"Upgrade $42.99/mo"| option_b
+    current -->|"Add more"| option_b
     current -->|"Add Service"| option_c
     </div>
 
@@ -975,8 +975,8 @@ flowchart LR
         <ul>
           <li>16 AMD vCPU, 32GB RAM</li>
           <li>True live browser rendering</li>
-          <li>Currently running 2 streams (17% CPU)</li>
-          <li>Room for 14+ more platforms</li>
+          <li>Currently running 3 streams (25% CPU)</li>
+          <li>Room for 13+ more platforms</li>
         </ul>
       </div>
 
@@ -1105,23 +1105,24 @@ flowchart TB
     subgraph now["Now (Live)"]
         YT["YouTube<br/>4.1B hours"]
         TW["Twitch<br/>1.3B hours"]
+        KI["Kick<br/>95/5 split!"]
     end
 
     subgraph phase1["Phase 1: High Value"]
-        KI["Kick<br/>95/5 split!"]
         RU["Rumble<br/>Alt audience"]
+        DL["DLive<br/>90/10 crypto"]
     end
 
     subgraph phase2["Phase 2: Decentralized"]
-        DL["DLive<br/>90/10 crypto"]
         OD["Odysee<br/>No censorship"]
+        TH["Theta.tv"]
     end
 
     subgraph phase3["Phase 3: Regional"]
-        TH["Theta.tv"]
         TR["Trovo"]
         VK["VK Live"]
         NI["Nimo TV"]
+        MX["Mixcloud"]
     end
 
     now --> phase1
@@ -1136,50 +1137,50 @@ flowchart TB
         <th>Why</th>
         <th>Effort</th>
       </tr>
-      <tr>
-        <td>1</td>
+      <tr class="highlight-row">
+        <td>-</td>
         <td><strong>Kick</strong></td>
         <td>95/5 revenue split, growing fast, creator-friendly</td>
-        <td>Low - just need account + stream key</td>
+        <td class="good">LIVE</td>
       </tr>
       <tr>
-        <td>2</td>
+        <td>1</td>
         <td><strong>Rumble</strong></td>
         <td>Alt audience, 24/7 friendly, less competition</td>
         <td>Low - RTMP ready</td>
       </tr>
       <tr>
-        <td>3</td>
+        <td>2</td>
         <td><strong>DLive</strong></td>
         <td>Crypto community, 90/10 split, loyal audience</td>
         <td>Low - RTMP ready</td>
       </tr>
       <tr>
-        <td>4</td>
+        <td>3</td>
         <td><strong>Odysee</strong></td>
         <td>Decentralized YouTube alt, 24/7 proven (RT runs on it)</td>
         <td>Low - stream.odysee.com RTMP</td>
       </tr>
       <tr>
-        <td>5</td>
+        <td>4</td>
         <td><strong>Theta.tv</strong></td>
         <td>Web3 native, P2P CDN, TFUEL rewards</td>
         <td>Low - no multistream restrictions</td>
       </tr>
       <tr>
-        <td>6</td>
+        <td>5</td>
         <td><strong>Trovo</strong></td>
         <td>Growing 300%/year in SEA/LATAM, gamification</td>
         <td>Low - RTMP ready</td>
       </tr>
       <tr>
-        <td>7</td>
+        <td>6</td>
         <td><strong>VK Live</strong></td>
         <td>100M+ Russian users, untapped market</td>
         <td>Low - RTMP via Restream integration</td>
       </tr>
       <tr>
-        <td>8</td>
+        <td>7</td>
         <td><strong>Nimo TV</strong></td>
         <td>SE Asia dominance (Indonesia, Vietnam, Philippines)</td>
         <td>Low - Huya's global platform</td>
@@ -1195,7 +1196,8 @@ flowchart TB
     <p>
       <a href="https://github.com/ldraney/lofi-stream-docs">lofi-stream-docs</a> |
       <a href="https://github.com/ldraney/lofi-stream-youtube">lofi-stream-youtube</a> |
-      <a href="https://github.com/ldraney/lofi-stream-twitch">lofi-stream-twitch</a>
+      <a href="https://github.com/ldraney/lofi-stream-twitch">lofi-stream-twitch</a> |
+      <a href="https://github.com/ldraney/lofi-stream-kick">lofi-stream-kick</a>
     </p>
     <p>Prod: 135.181.150.82 | Dev: 5.78.42.22 | Last updated: December 2025</p>
   </footer>

@@ -25,7 +25,7 @@ lofi-stream/
 └── platforms/
     ├── youtube.env # Stream key + RTMP URL
     ├── twitch.env  # Stream key + RTMP URL
-    ├── kick.env    # Stream key + RTMP URL (pending)
+    ├── kick.env    # Stream key + RTMP URL
     └── rumble.env  # Stream key + RTMP URL (pending)
 ```
 
@@ -146,5 +146,5 @@ ssh lofidev@5.78.42.22 'ls -la ~/streams/'
 |----------|---------|------------|---------|--------|
 | YouTube | :99 | virtual_speaker | 1.5 Mbps | LIVE |
 | Twitch | :98 | twitch_speaker | 2.5 Mbps | LIVE |
-| Kick | :97 | kick_speaker | 6.0 Mbps | Ready |
+| Kick | :97 | kick_speaker | 6.0 Mbps | LIVE |
 | Rumble | :96 | rumble_speaker | 4.5 Mbps | Ready |
