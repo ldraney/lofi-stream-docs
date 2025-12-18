@@ -10,6 +10,8 @@ Central documentation hub and DevOps scripts for the lofi-stream project.
 ├── lofi-stream-twitch/      # Coffee shop theme → Twitch (:98)
 ├── lofi-stream-kick/        # Arcade theme → Kick (:97)
 ├── lofi-stream-rumble/      # Library theme → Rumble (:96)
+├── lofi-stream-dlive/       # Space station theme → DLive (:95)
+├── lofi-stream-odysee/      # Underwater theme → Odysee (:94)
 └── lofi-stream-docs/        # This repo (documentation + DevOps)
 ```
 
@@ -26,7 +28,9 @@ lofi-stream/
     ├── youtube.env # Stream key + RTMP URL
     ├── twitch.env  # Stream key + RTMP URL
     ├── kick.env    # Stream key + RTMP URL
-    └── rumble.env  # Stream key + RTMP URL (pending)
+    ├── rumble.env  # Stream key + RTMP URL (needs followers)
+    ├── dlive.env   # Stream key + RTMP URL (pending)
+    └── odysee.env  # Stream key + RTMP URL (pending)
 ```
 
 SSH key: `~/api-secrets/hetzner-server/id_ed25519`
@@ -139,6 +143,8 @@ ssh lofidev@5.78.42.22 'ls -la ~/streams/'
 - **Twitch Page:** https://ldraney.github.io/lofi-stream-twitch/
 - **Kick Page:** https://ldraney.github.io/lofi-stream-kick/
 - **Rumble Page:** https://ldraney.github.io/lofi-stream-rumble/
+- **DLive Page:** https://ldraney.github.io/lofi-stream-dlive/
+- **Odysee Page:** https://ldraney.github.io/lofi-stream-odysee/
 
 ## Stream Configuration
 
@@ -147,7 +153,9 @@ ssh lofidev@5.78.42.22 'ls -la ~/streams/'
 | YouTube | :99 | virtual_speaker | 1.5 Mbps | LIVE |
 | Twitch | :98 | twitch_speaker | 2.5 Mbps | LIVE |
 | Kick | :97 | kick_speaker | 6.0 Mbps | LIVE |
-| Rumble | :96 | rumble_speaker | 4.5 Mbps | Ready |
+| Rumble | :96 | rumble_speaker | 4.5 Mbps | Needs followers |
+| DLive | :95 | dlive_speaker | 4.5 Mbps | Ready |
+| Odysee | :94 | odysee_speaker | 3.5 Mbps | Ready |
 
 ---
 
