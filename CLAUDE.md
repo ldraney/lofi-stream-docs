@@ -12,6 +12,7 @@ Central documentation hub and DevOps scripts for the lofi-stream project.
 ├── lofi-stream-rumble/      # Library theme → Rumble (:96)
 ├── lofi-stream-dlive/       # Space station theme → DLive (:95)
 ├── lofi-stream-odysee/      # Underwater theme → Odysee (:94)
+├── lofi-stream-frontend/    # Status page (served from VPS)
 └── lofi-stream-docs/        # This repo (documentation + DevOps)
 ```
 
@@ -138,6 +139,7 @@ ssh lofidev@5.78.42.22 'ls -la ~/streams/'
 
 ## Live Sites
 
+- **Status Dashboard:** http://lofi-status.duckdns.org/ (live stream status, updates every 60s)
 - **Docs:** https://ldraney.github.io/lofi-stream-docs/
 - **YouTube Page:** https://ldraney.github.io/lofi-stream-youtube/
 - **Twitch Page:** https://ldraney.github.io/lofi-stream-twitch/
