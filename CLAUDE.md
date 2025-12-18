@@ -148,3 +148,87 @@ ssh lofidev@5.78.42.22 'ls -la ~/streams/'
 | Twitch | :98 | twitch_speaker | 2.5 Mbps | LIVE |
 | Kick | :97 | kick_speaker | 6.0 Mbps | LIVE |
 | Rumble | :96 | rumble_speaker | 4.5 Mbps | Ready |
+
+---
+
+## Roadmap: Streams → Vibe Sites → Stores
+
+**The Vision:** 15+ automated streams → interactive websites (games/experiences) → curated dropship stores. Each funnel matches a vibe. Feels like discovering a cool local shop, not a sales pitch.
+
+```
+┌─────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  24/7       │     │  Interactive    │     │  Dropship       │
+│  Streams    │ ──► │  Vibe Sites     │ ──► │  Stores         │
+│  (15+)      │     │  (Games/Art)    │     │  (Curated)      │
+└─────────────┘     └─────────────────┘     └─────────────────┘
+```
+
+### Theme → Vibe → Products
+
+| Theme | Stream Vibe | Site Experience | Store Products |
+|-------|-------------|-----------------|----------------|
+| Night City | Cyberpunk/neon | Explore rooftops, click neon signs | Tech gear, LED strips, mechanical keyboards |
+| Coffee Shop | Cozy/warm | Arrange items, discover recipes | Coffee beans, mugs, cozy apparel |
+| Arcade | Retro gaming | Mini-games, easter eggs | Retro consoles, posters, pixel art |
+| Library | Quiet/studious | Browse shelves, find hidden notes | Books, stationery, reading lamps |
+
+### Phase 1: Foundation (Current Month)
+
+- [ ] **Expand to 15 platforms** - Add Facebook, X, LinkedIn Live, DLive, Trovo, etc.
+- [ ] **Unified branding** - Consistent channel art, descriptions, links across all platforms
+- [ ] **Bio links everywhere** - Every platform links to its vibe site
+- [ ] **Set up affiliate accounts** - Amazon Associates, coffee brands, tech gear programs
+- [ ] **Automate clip extraction** - FFmpeg script to pull highlights for Shorts/TikTok/Reels
+
+### Phase 2: Interactive Vibe Sites
+
+- [ ] **Upgrade GitHub Pages sites** - Transform from static pages to interactive experiences
+- [ ] **Add clickable elements** - Objects in the scene link to products or surprises
+- [ ] **Easter eggs & discoveries** - Hidden interactions reward exploration
+- [ ] **Mobile-friendly** - Touch interactions work on phones
+- [ ] **Each site unique** - Night city feels different from coffee shop feels different from arcade
+
+### Phase 3: Dropship Stores
+
+- [ ] **Shopify stores per vibe** - Or one store with vibe-based collections
+- [ ] **Curated products only** - Nothing that breaks the aesthetic
+- [ ] **Dropshipping setup** - Zero inventory (Printful, Spocket, DSers)
+- [ ] **Seamless transitions** - Site experience flows naturally into store
+- [ ] **Fun product descriptions** - Match the vibe, not generic copy
+
+### Phase 4: Content Flywheel
+
+- [ ] **Daily short-form clips** - Automated or semi-automated posting
+- [ ] **Cross-promotion** - Each stream mentions other vibes
+- [ ] **Community Discord** - Central hub for all vibes
+- [ ] **Email capture** - "Get notified of new discoveries" on each site
+
+### Phase 5: Scale & Optimize
+
+- [ ] **A/B test site interactions** - What gets clicks?
+- [ ] **Track funnel metrics** - Stream → Site → Store conversion
+- [ ] **Add more vibes/themes** - Space station, rainy Tokyo, forest cabin
+- [ ] **Sponsorships** - Brands pay to be featured in the vibe
+
+### Revenue Targets
+
+| Phase | Monthly Revenue | Notes |
+|-------|-----------------|-------|
+| Phase 1 | $0-50 | Building foundation, affiliate links live |
+| Phase 2 | $50-200 | Sites drive engagement, some affiliate sales |
+| Phase 3 | $200-500 | Stores live, dropship margins ~20-30% |
+| Phase 4 | $500-1500 | Flywheel working, multiple revenue streams |
+| Phase 5 | $1500+ | Optimized funnels, potential sponsorships |
+
+### Tech Stack (Planned)
+
+| Layer | Tool | Cost |
+|-------|------|------|
+| Streaming | Hetzner VPS + FFmpeg | ~$50/mo |
+| Vibe Sites | GitHub Pages (free) or Vercel | $0-20/mo |
+| Stores | Shopify Basic | $29/mo per store |
+| Dropship | Printful/Spocket | $0 (margin on sales) |
+| Short-form | CapCut (free) + scheduling tool | $0-15/mo |
+| Links | Linktree or custom | $0 |
+
+**Total overhead:** ~$80-150/mo for the entire ecosystem
