@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lofi Stream - Project Documentation</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg: #1a1a2e;
+      --bg-secondary: #16213e;
+      --accent: #e94560;
+      --accent-secondary: #0f3460;
+      --text: #eaeaea;
+      --text-muted: #a0a0a0;
+      --success: #4ecca3;
+      --warning: #ffc107;
+      --border: #2a2a4a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, var(--accent), #ff6b6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: var(--success);
+      color: var(--bg);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+
+    h2 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent-secondary);
+    }
+
+    h3 {
+      color: var(--text);
+      margin: 1.5rem 0 0.75rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+      color: var(--text-muted);
+    }
+
+    .mermaid {
+      background: var(--bg-secondary);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      overflow-x: auto;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .card {
+      background: var(--bg-secondary);
+      padding: 1.25rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .card h4 {
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .phase {
+      background: var(--bg-secondary);
+      padding: 1.25rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      border-left: 4px solid var(--accent-secondary);
+    }
+
+    .phase.completed {
+      border-left-color: var(--success);
+    }
+
+    .phase.current {
+      border-left-color: var(--warning);
+    }
+
+    .phase.future {
+      border-left-color: var(--accent);
+    }
+
+    .phase-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .phase-title {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .phase-status {
+      font-size: 0.8rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: var(--border);
+    }
+
+    .phase.completed .phase-status {
+      background: var(--success);
+      color: var(--bg);
+    }
+
+    .phase.current .phase-status {
+      background: var(--warning);
+      color: var(--bg);
+    }
+
+    ul {
+      list-style: none;
+      padding-left: 1rem;
+    }
+
+    li {
+      position: relative;
+      padding-left: 1.25rem;
+      margin-bottom: 0.4rem;
+      color: var(--text-muted);
+    }
+
+    li::before {
+      content: '>';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    li.done::before {
+      content: '✓';
+      color: var(--success);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--accent-secondary);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    td {
+      color: var(--text-muted);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    code {
+      background: var(--accent-secondary);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9em;
+    }
+
+    .links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--accent-secondary);
+      color: var(--text);
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .links a:hover {
+      background: var(--accent);
+    }
+
+    footer {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>lofi-stream</h1>
+    <p class="subtitle">24/7 YouTube live stream with interactive lofi visuals</p>
+    <span class="status-badge">LIVE NOW</span>
+    <div class="links">
+      <a href="https://ldraney.github.io/lofi-stream/" target="_blank">View Live Page</a>
+      <a href="https://github.com/ldraney/lofi-stream-youtube" target="_blank">GitHub Repo</a>
+    </div>
+  </header>
+
+  <section id="overview">
+    <h2>Project Overview</h2>
+    <p>A 24/7 YouTube live stream displaying a lofi-style HTML page with ambient visuals and generative music. The end goal is an interactive "Where's Waldo" experience where viewers can visit the live page and discover hidden elements.</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <h4>Current State</h4>
+        <p>Streaming live to YouTube with auto-recovery via systemd. 720p @ 24fps, ~€4.50/month.</p>
+      </div>
+      <div class="card">
+        <h4>End Goal</h4>
+        <p>Multi-platform streaming with interactive elements, analytics, monetization, and security.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="architecture">
+    <h2>System Architecture</h2>
+
+    <h3>Current Architecture</h3>
+    <div class="mermaid">
+flowchart LR
+    subgraph GH["GitHub Pages"]
+        HTML["index.html<br/>lofi visuals + audio"]
+    end
+
+    subgraph VPS["Hetzner VPS (CX22)"]
+        Xvfb["Xvfb<br/>Virtual Display"]
+        Chrome["Chromium<br/>Headless Browser"]
+        Pulse["PulseAudio<br/>Audio Routing"]
+        FFmpeg["FFmpeg<br/>Capture + Encode"]
+    end
+
+    subgraph YT["YouTube"]
+        RTMP["RTMP Ingest"]
+        Live["Live Stream"]
+    end
+
+    HTML --> Chrome
+    Xvfb --> Chrome
+    Chrome --> Pulse
+    Xvfb --> FFmpeg
+    Pulse --> FFmpeg
+    FFmpeg -->|RTMP| RTMP
+    RTMP --> Live
+    </div>
+
+    <h3>Target Architecture (Multi-Platform + Interactive)</h3>
+    <div class="mermaid">
+flowchart TB
+    subgraph Frontend["Frontend (GitHub Pages)"]
+        HTML["Interactive Lofi Page"]
+        Analytics["Analytics SDK"]
+        Easter["Hidden Easter Eggs"]
+    end
+
+    subgraph Backend["Backend (Optional)"]
+        API["API Server"]
+        DB[(Database)]
+        Cache["Redis Cache"]
+    end
+
+    subgraph Streaming["Streaming Infrastructure"]
+        VPS1["VPS 1: Lofi Stream"]
+        VPS2["VPS 2: Jazz Stream"]
+        VPS3["VPS 3: Rain Stream"]
+    end
+
+    subgraph Restream["Restream.io"]
+        MUX["Multiplexer"]
+    end
+
+    subgraph Platforms["Streaming Platforms"]
+        YT["YouTube"]
+        TW["Twitch"]
+        KI["Kick"]
+        FB["Facebook"]
+    end
+
+    HTML --> Analytics
+    Analytics --> API
+    Easter --> API
+    API --> DB
+    API --> Cache
+
+    VPS1 --> MUX
+    VPS2 --> MUX
+    VPS3 --> MUX
+
+    MUX --> YT
+    MUX --> TW
+    MUX --> KI
+    MUX --> FB
+    </div>
+  </section>
+
+  <section id="roadmap">
+    <h2>Roadmap</h2>
+
+    <div class="mermaid">
+gantt
+    title Lofi Stream Roadmap
+    dateFormat YYYY-MM-DD
+    section Phase 1-4
+        Lofi HTML Page           :done, p1, 2024-12-01, 3d
+        Hetzner VPS Setup        :done, p2, after p1, 2d
+        Streaming Pipeline       :done, p3, after p2, 3d
+        Production Hardening     :done, p4, after p3, 2d
+    section Phase 5-6
+        Polish & UX              :active, p5, 2024-12-18, 7d
+        Multi-Platform           :p6, after p5, 5d
+    section Phase 7-9
+        Monetization Setup       :p7, after p6, 5d
+        Interactive Features     :p8, after p7, 10d
+        Analytics & Security     :p9, after p8, 7d
+    </div>
+
+    <div class="phase completed">
+      <div class="phase-header">
+        <span class="phase-title">Phase 1: Lofi HTML Page</span>
+        <span class="phase-status">Completed</span>
+      </div>
+      <ul>
+        <li class="done">Create basic HTML/CSS lofi page</li>
+        <li class="done">Add ambient visuals (rain, particles, animations)</li>
+        <li class="done">Add lofi audio (Web Audio API generative)</li>
+        <li class="done">Deploy to GitHub Pages</li>
+      </ul>
+    </div>
+
+    <div class="phase completed">
+      <div class="phase-header">
+        <span class="phase-title">Phase 2: Hetzner VPS Setup</span>
+        <span class="phase-status">Completed</span>
+      </div>
+      <ul>
+        <li class="done">Provision Hetzner VPS (Ubuntu 24.04, 2GB RAM)</li>
+        <li class="done">SSH access configured</li>
+        <li class="done">Install dependencies: Xvfb, Chromium, ffmpeg, pulseaudio</li>
+      </ul>
+    </div>
+
+    <div class="phase completed">
+      <div class="phase-header">
+        <span class="phase-title">Phase 3: Streaming Pipeline</span>
+        <span class="phase-status">Completed</span>
+      </div>
+      <ul>
+        <li class="done">Create streaming script</li>
+        <li class="done">Configure ffmpeg for YouTube RTMP</li>
+        <li class="done">Tune encoding (720p, 1.5Mbps, AAC audio)</li>
+      </ul>
+    </div>
+
+    <div class="phase completed">
+      <div class="phase-header">
+        <span class="phase-title">Phase 4: Production Hardening</span>
+        <span class="phase-status">Completed</span>
+      </div>
+      <ul>
+        <li class="done">Create systemd service for auto-start</li>
+        <li class="done">Add crash recovery (Restart=always)</li>
+        <li class="done">Enable on boot</li>
+      </ul>
+    </div>
+
+    <div class="phase current">
+      <div class="phase-header">
+        <span class="phase-title">Phase 5: Polish & UX</span>
+        <span class="phase-status">In Progress</span>
+      </div>
+      <ul>
+        <li>Add stream title/description rotation</li>
+        <li>Dynamic visuals based on time of day</li>
+        <li>Improve visual fidelity</li>
+        <li>Add more audio variations</li>
+      </ul>
+    </div>
+
+    <div class="phase future">
+      <div class="phase-header">
+        <span class="phase-title">Phase 6: Multi-Platform Streaming</span>
+        <span class="phase-status">Planned</span>
+      </div>
+      <ul>
+        <li>Set up Restream.io integration</li>
+        <li>Add Twitch output</li>
+        <li>Add Kick output</li>
+        <li>Configure platform-specific settings</li>
+      </ul>
+    </div>
+
+    <div class="phase future">
+      <div class="phase-header">
+        <span class="phase-title">Phase 7: Monetization Setup</span>
+        <span class="phase-status">Planned</span>
+      </div>
+      <ul>
+        <li>Apply for YouTube Partner Program (1k subs, 4k hours)</li>
+        <li>Set up Twitch Affiliate</li>
+        <li>Enable Super Chat / donations</li>
+        <li>Add merch links</li>
+        <li>Affiliate marketing integration</li>
+      </ul>
+    </div>
+
+    <div class="phase future">
+      <div class="phase-header">
+        <span class="phase-title">Phase 8: Interactive "Where's Waldo" Features</span>
+        <span class="phase-status">Planned</span>
+      </div>
+      <ul>
+        <li>Add hidden clickable elements (Easter eggs)</li>
+        <li>Discovery tracking (find N hidden items)</li>
+        <li>Visual feedback on discovery</li>
+        <li>Progress persistence (localStorage or backend)</li>
+        <li>Leaderboard / completion rewards</li>
+      </ul>
+    </div>
+
+    <div class="phase future">
+      <div class="phase-header">
+        <span class="phase-title">Phase 9: Analytics & Security</span>
+        <span class="phase-status">Planned</span>
+      </div>
+      <ul>
+        <li>Implement analytics (page views, interactions)</li>
+        <li>Track Easter egg discovery rates</li>
+        <li>Add CSP headers and input sanitization</li>
+        <li>Rate limiting for any API endpoints</li>
+        <li>Basic anti-cheat measures</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="scaling">
+    <h2>Scaling & Infrastructure</h2>
+
+    <h3>Current Resource Usage</h3>
+    <table>
+      <tr>
+        <th>Resource</th>
+        <th>Used</th>
+        <th>Capacity</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <td>CPU</td>
+        <td>~52%</td>
+        <td>2 vCPU</td>
+        <td>OK</td>
+      </tr>
+      <tr>
+        <td>RAM</td>
+        <td>658MB</td>
+        <td>2GB</td>
+        <td>OK</td>
+      </tr>
+      <tr>
+        <td>Network</td>
+        <td>~1.5 Mbps</td>
+        <td>~1 Gbps</td>
+        <td>OK</td>
+      </tr>
+      <tr>
+        <td>Disk</td>
+        <td>~4GB</td>
+        <td>40GB</td>
+        <td>OK</td>
+      </tr>
+    </table>
+
+    <h3>Scaling Options</h3>
+    <table>
+      <tr>
+        <th>Streams</th>
+        <th>Server</th>
+        <th>vCPU</th>
+        <th>Cost/mo</th>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>CX22 (current)</td>
+        <td>2</td>
+        <td>€4.50</td>
+      </tr>
+      <tr>
+        <td>2-3</td>
+        <td>CX32</td>
+        <td>4</td>
+        <td>€7.50</td>
+      </tr>
+      <tr>
+        <td>5-6</td>
+        <td>CX42</td>
+        <td>8</td>
+        <td>€14</td>
+      </tr>
+      <tr>
+        <td>10-12</td>
+        <td>CX52</td>
+        <td>16</td>
+        <td>€28</td>
+      </tr>
+    </table>
+  </section>
+
+  <section id="monetization">
+    <h2>Monetization Strategy</h2>
+
+    <div class="mermaid">
+flowchart LR
+    subgraph Requirements
+        YT_REQ["YouTube<br/>1k subs + 4k hours"]
+        TW_REQ["Twitch<br/>50 followers + 3 avg viewers"]
+    end
+
+    subgraph Revenue["Revenue Streams"]
+        ADS["Ad Revenue<br/>$2-12 per 1k views"]
+        SUBS["Subscriptions<br/>$2.50-$25 each"]
+        TIPS["Tips/Donations<br/>Super Chat, Bits"]
+        MERCH["Merchandise"]
+        AFF["Affiliate Links"]
+    end
+
+    YT_REQ --> ADS
+    YT_REQ --> SUBS
+    YT_REQ --> TIPS
+    TW_REQ --> SUBS
+    TW_REQ --> TIPS
+
+    ADS --> |"Scale"| MERCH
+    SUBS --> |"Scale"| AFF
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <h4>YouTube Partner Program</h4>
+        <p><strong>Requirements:</strong> 1,000 subscribers, 4,000 watch hours</p>
+        <p><strong>Revenue:</strong> $2-12 per 1,000 monetized views</p>
+        <p><strong>Top Example:</strong> Lofi Girl earns ~$87k/month</p>
+      </div>
+      <div class="card">
+        <h4>Twitch Affiliate</h4>
+        <p><strong>Requirements:</strong> 50 followers, 3 avg concurrent viewers</p>
+        <p><strong>Revenue:</strong> 50% of subs ($2.50/Tier 1), Bits, Ads</p>
+        <p><strong>Range:</strong> $50-$30,000/month depending on viewers</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="repo-structure">
+    <h2>Repository Structure</h2>
+
+    <div class="mermaid">
+flowchart TB
+    subgraph Root["lofi-stream-youtube/"]
+        CLAUDE["CLAUDE.md"]
+        README["README.md"]
+
+        subgraph docs["docs/ (GitHub Pages)"]
+            INDEX["index.html"]
+            STYLE["style.css"]
+            JS["app.js"]
+            ASSETS["assets/"]
+        end
+
+        subgraph server["server/ (VPS Scripts)"]
+            STREAM["stream.sh"]
+            SETUP["setup.sh"]
+            SERVICE["lofi-stream.service"]
+            HEALTH["health-check.sh"]
+        end
+
+        subgraph analytics["analytics/ (Planned)"]
+            TRACK["tracking.js"]
+            API_DIR["api/"]
+        end
+
+        subgraph infra["infra/ (Planned)"]
+            TERRAFORM["terraform/"]
+            ANSIBLE["ansible/"]
+        end
+    end
+    </div>
+
+    <h3>Current Structure</h3>
+    <pre><code>lofi-stream-youtube/
+├── CLAUDE.md           # Project documentation
+├── README.md           # Public readme
+├── status.sh           # Quick status check
+├── docs/               # GitHub Pages site
+│   ├── index.html      # Lofi visuals + audio
+│   └── style.css       # Animations
+└── server/             # VPS scripts
+    ├── stream.sh       # Main streaming script
+    ├── setup.sh        # Server setup
+    ├── lofi-stream.service
+    └── health-check.sh</code></pre>
+
+    <h3>Planned Additions</h3>
+    <pre><code>├── docs/
+│   ├── js/
+│   │   ├── app.js          # Main application
+│   │   ├── audio.js        # Audio generation
+│   │   ├── easter-eggs.js  # Hidden elements
+│   │   └── analytics.js    # Event tracking
+│   └── assets/
+│       └── images/
+├── analytics/              # Analytics backend
+│   ├── api/
+│   └── dashboard/
+├── infra/                  # Infrastructure as code
+│   ├── terraform/          # VPS provisioning
+│   └── ansible/            # Configuration mgmt
+└── scripts/                # Utility scripts
+    └── deploy.sh</code></pre>
+  </section>
+
+  <section id="platforms">
+    <h2>Supported Streaming Platforms</h2>
+
+    <table>
+      <tr>
+        <th>Platform</th>
+        <th>RTMP</th>
+        <th>24/7</th>
+        <th>Monetization</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <td>YouTube</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Ads, Super Chat, Memberships</td>
+        <td>Active</td>
+      </tr>
+      <tr>
+        <td>Twitch</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Subs, Bits, Ads</td>
+        <td>Planned</td>
+      </tr>
+      <tr>
+        <td>Kick</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Subs, Tips</td>
+        <td>Planned</td>
+      </tr>
+      <tr>
+        <td>Facebook</td>
+        <td>Yes</td>
+        <td>Limited</td>
+        <td>Stars, Ads</td>
+        <td>Planned</td>
+      </tr>
+      <tr>
+        <td>TikTok Live</td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>Gifts</td>
+        <td>Future</td>
+      </tr>
+      <tr>
+        <td>Rumble</td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>Rants, Tips</td>
+        <td>Future</td>
+      </tr>
+    </table>
+  </section>
+
+  <footer>
+    <p>Last updated: December 2024</p>
+    <p>Server: 5.78.42.22 | GitHub Pages: ldraney.github.io/lofi-stream</p>
+  </footer>
+
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        primaryColor: '#e94560',
+        primaryTextColor: '#eaeaea',
+        primaryBorderColor: '#0f3460',
+        lineColor: '#a0a0a0',
+        secondaryColor: '#16213e',
+        tertiaryColor: '#1a1a2e',
+        background: '#1a1a2e',
+        mainBkg: '#16213e',
+        nodeBorder: '#0f3460',
+        clusterBkg: '#16213e',
+        clusterBorder: '#0f3460',
+        titleColor: '#e94560',
+        edgeLabelBackground: '#16213e'
+      },
+      flowchart: {
+        curve: 'basis',
+        padding: 20
+      },
+      gantt: {
+        barHeight: 30,
+        fontSize: 12,
+        sectionFontSize: 14
+      }
+    });
+  </script>
+</body>
+</html>
