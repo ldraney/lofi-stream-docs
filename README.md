@@ -37,10 +37,19 @@ python3 -m http.server 8080
 
 ## Infrastructure
 
-Both streams run on a single Hetzner CX22 VPS (€4.50/mo):
+### Production Server (CPX62 - $42.99/mo)
+- **IP:** 135.181.150.82
+- **Specs:** 16 vCPU AMD, 32GB RAM, 640GB NVMe
+- **Capacity:** 16-20 simultaneous streams
+- **Current usage:** 2 streams (~17% CPU, ~1.4GB RAM)
 - Separate virtual displays (`:99` for YouTube, `:98` for Twitch)
 - Separate PulseAudio sinks (`virtual_speaker`, `twitch_speaker`)
 - systemd services with auto-restart
+
+### Dev Server (CX22 - €4.50/mo)
+- **IP:** 5.78.42.22
+- **Specs:** 2 vCPU, 2GB RAM
+- **Purpose:** Testing new themes and features before deploying to prod
 
 ## Roadmap Summary
 

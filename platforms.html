@@ -400,32 +400,32 @@
 
   <section id="current-status">
     <h2>Current Status</h2>
-    <p>Two streams running on a single Hetzner CX22 VPS (2 vCPU, 2GB RAM) for ~€4.50/month.</p>
+    <p>Two streams running on a Hetzner CPX62 VPS (16 vCPU AMD, 32GB RAM) for $42.99/month with massive expansion capacity.</p>
 
-    <div class="scaling-card">
+    <div class="scaling-card recommended">
       <div class="scaling-header">
-        <span class="scaling-title">CX22 Resource Usage (2 Streams)</span>
-        <span class="scaling-cost">€4.50/mo</span>
+        <span class="scaling-title">CPX62 Resource Usage (2 Streams)</span>
+        <span class="scaling-cost">$42.99/mo</span>
       </div>
 
       <div class="metric-row">
         <span>CPU</span>
-        <span>78% used</span>
+        <span>17% used (83% available)</span>
       </div>
       <div class="progress-bar">
-        <div class="progress-fill cpu" style="width: 78%"></div>
+        <div class="progress-fill cpu" style="width: 17%"></div>
       </div>
 
       <div class="metric-row">
         <span>RAM</span>
-        <span>1.3GB / 2GB (68%)</span>
+        <span>1.4GB / 32GB (4%)</span>
       </div>
       <div class="progress-bar">
-        <div class="progress-fill ram" style="width: 68%"></div>
+        <div class="progress-fill ram" style="width: 4%"></div>
       </div>
 
       <p style="margin-top: 1rem; font-size: 0.9rem;">
-        <strong>Verdict:</strong> At capacity. Adding a 3rd stream would cause instability.
+        <strong>Verdict:</strong> Massive headroom. Can add 14+ more streams with true live browser rendering.
       </p>
     </div>
   </section>
@@ -942,7 +942,7 @@
 
     <div class="mermaid">
 flowchart LR
-    subgraph current["Current (CX22)"]
+    subgraph current["Current (CPX62)"]
         S1["YouTube"]
         S2["Twitch"]
     end
@@ -968,24 +968,25 @@ flowchart LR
     </div>
 
     <div class="option-grid">
-      <div class="option-card">
-        <h4>Option A: Stay on CX22</h4>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">€4.50/mo - 2 streams max</p>
-        <ul>
-          <li>Already at 78% CPU</li>
-          <li>No room for expansion</li>
-          <li>Risk of instability</li>
-        </ul>
-      </div>
-
       <div class="option-card best">
-        <h4>Option B: Upgrade to CPX62</h4>
-        <p style="color: var(--success); font-size: 0.9rem;">$42.99/mo - 16-20 streams</p>
+        <h4>Current: CPX62 (Production)</h4>
+        <p style="color: var(--success); font-size: 0.9rem;">$42.99/mo - 16-20 streams capacity</p>
         <ul>
           <li>16 AMD vCPU, 32GB RAM</li>
           <li>True live browser rendering</li>
-          <li>Cover ALL major platforms</li>
-          <li>~$2.15/stream at 20 streams</li>
+          <li>Currently running 2 streams (17% CPU)</li>
+          <li>Room for 14+ more platforms</li>
+        </ul>
+      </div>
+
+      <div class="option-card">
+        <h4>Dev Server: CX22</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">€4.50/mo - testing only</p>
+        <ul>
+          <li>2 vCPU, 2GB RAM</li>
+          <li>Test new themes/features</li>
+          <li>Staging environment</li>
+          <li>Not running streams</li>
         </ul>
       </div>
 
@@ -1024,7 +1025,7 @@ flowchart LR
         <th>Cost/Stream</th>
       </tr>
       <tr>
-        <td>CX22 (current)</td>
+        <td>CX22 (dev)</td>
         <td>2</td>
         <td>2GB</td>
         <td>2</td>
@@ -1056,7 +1057,7 @@ flowchart LR
         <td>€1.40-1.75</td>
       </tr>
       <tr class="highlight-row">
-        <td><strong>CPX62 (AMD)</strong></td>
+        <td><strong>CPX62 (current)</strong></td>
         <td><strong>16</strong></td>
         <td><strong>32GB</strong></td>
         <td><strong>16-20</strong></td>
@@ -1195,7 +1196,7 @@ flowchart TB
       <a href="https://github.com/ldraney/lofi-stream-youtube">lofi-stream-youtube</a> |
       <a href="https://github.com/ldraney/lofi-stream-twitch">lofi-stream-twitch</a>
     </p>
-    <p>Last updated: December 2025</p>
+    <p>Prod: 135.181.150.82 | Dev: 5.78.42.22 | Last updated: December 2025</p>
   </footer>
 
   <script>

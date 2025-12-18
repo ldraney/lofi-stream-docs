@@ -298,7 +298,7 @@
 
   <section id="overview">
     <h2>System Overview</h2>
-    <p>Both YouTube and Twitch streams run simultaneously on a single Hetzner CX22 VPS (2 vCPU, 2GB RAM). Each stream has its own isolated virtual display and audio pipeline.</p>
+    <p>Both YouTube and Twitch streams run simultaneously on a Hetzner CPX62 VPS (16 vCPU AMD, 32GB RAM). Each stream has its own isolated virtual display and audio pipeline, with massive headroom for expansion to 16+ platforms.</p>
 
     <div class="mermaid">
 flowchart TB
@@ -308,7 +308,7 @@ flowchart TB
         TW["Twitch Live"]
     end
 
-    subgraph hetzner["Hetzner VPS - 5.78.42.22"]
+    subgraph hetzner["Hetzner VPS - 135.181.150.82 (Prod)"]
         subgraph systemd["systemd Services"]
             SVC1["lofi-stream.service"]
             SVC2["lofi-stream-twitch.service"]
@@ -373,12 +373,12 @@ flowchart TB
       </div>
 
       <div class="card">
-        <h4>Server (Hetzner CX22)</h4>
+        <h4>Server (Hetzner CPX62)</h4>
         <p>Ubuntu 24.04 VPS running headless browsers that capture and stream to RTMP endpoints.</p>
         <ul style="margin-top: 0.5rem; padding-left: 1.5rem;">
-          <li style="color: var(--text-muted);">2 vCPU AMD EPYC</li>
-          <li style="color: var(--text-muted);">2GB RAM</li>
-          <li style="color: var(--text-muted);">40GB NVMe SSD</li>
+          <li style="color: var(--text-muted);">16 vCPU AMD</li>
+          <li style="color: var(--text-muted);">32GB RAM</li>
+          <li style="color: var(--text-muted);">640GB NVMe SSD</li>
           <li style="color: var(--text-muted);">20TB traffic/mo</li>
         </ul>
       </div>
@@ -613,7 +613,7 @@ WantedBy=multi-user.target</code></pre>
   <section id="resource-usage">
     <h2>Resource Usage</h2>
 
-    <h3>Dual-Stream Performance (CX22)</h3>
+    <h3>Dual-Stream Performance (CPX62)</h3>
     <table>
       <tr>
         <th>Resource</th>
@@ -623,15 +623,15 @@ WantedBy=multi-user.target</code></pre>
       </tr>
       <tr>
         <td>CPU</td>
-        <td>~70%</td>
-        <td>2 vCPU</td>
-        <td>30%</td>
+        <td>~17%</td>
+        <td>16 vCPU</td>
+        <td>83% (~14 more streams)</td>
       </tr>
       <tr>
         <td>RAM</td>
-        <td>~1.2GB</td>
-        <td>2GB</td>
-        <td>800MB</td>
+        <td>~1.4GB</td>
+        <td>32GB</td>
+        <td>30GB</td>
       </tr>
       <tr>
         <td>Network Out</td>
@@ -642,8 +642,8 @@ WantedBy=multi-user.target</code></pre>
       <tr>
         <td>Disk</td>
         <td>~4GB</td>
-        <td>40GB</td>
-        <td>36GB</td>
+        <td>640GB</td>
+        <td>636GB</td>
       </tr>
     </table>
 
@@ -659,37 +659,37 @@ pie title CPU Usage by Process
     "Idle" : 30
     </div>
 
-    <h3>Scaling Estimates</h3>
+    <h3>Scaling Estimates (CPX62)</h3>
     <table>
       <tr>
         <th>Streams</th>
         <th>Est. CPU</th>
         <th>Est. RAM</th>
-        <th>Recommended Server</th>
+        <th>Status</th>
       </tr>
       <tr>
-        <td>1</td>
-        <td>~35%</td>
-        <td>~700MB</td>
-        <td>CX22 (current)</td>
+        <td>2 (current)</td>
+        <td>~17%</td>
+        <td>~1.4GB</td>
+        <td>Live</td>
       </tr>
       <tr>
-        <td>2</td>
-        <td>~70%</td>
-        <td>~1.2GB</td>
-        <td>CX22 (current)</td>
+        <td>8</td>
+        <td>~50%</td>
+        <td>~5GB</td>
+        <td>Comfortable</td>
       </tr>
       <tr>
-        <td>3</td>
-        <td>~105%</td>
-        <td>~1.7GB</td>
-        <td>CX32 (4 vCPU)</td>
+        <td>12</td>
+        <td>~75%</td>
+        <td>~8GB</td>
+        <td>Good</td>
       </tr>
       <tr>
-        <td>4</td>
-        <td>~140%</td>
-        <td>~2.2GB</td>
-        <td>CX32 (4 vCPU, 4GB)</td>
+        <td>16-20</td>
+        <td>~100%</td>
+        <td>~12GB</td>
+        <td>Max capacity</td>
       </tr>
     </table>
   </section>
@@ -701,7 +701,11 @@ pie title CPU Usage by Process
     <div class="command-block">
       <div class="command-header">SSH to Server</div>
       <div class="command-body">
-        <code>ssh -i ~/api-secrets/hetzner-server/id_ed25519 root@5.78.42.22</code>
+        <code># Production server
+ssh -i ~/api-secrets/hetzner-server/id_ed25519 root@135.181.150.82
+
+# Dev server (old CX22)
+ssh -i ~/api-secrets/hetzner-server/id_ed25519 root@5.78.42.22</code>
       </div>
     </div>
 
@@ -820,7 +824,7 @@ df -h</code>
       <tr>
         <td><code>LOFI_SERVER_IP</code></td>
         <td>All 3 repos</td>
-        <td>Server IP (5.78.42.22)</td>
+        <td>Server IP (135.181.150.82)</td>
       </tr>
       <tr>
         <td><code>YOUTUBE_STREAM_KEY</code></td>
@@ -849,7 +853,7 @@ Environment=TWITCH_KEY=live_xxxxxxxxxx</code></pre>
       <a href="https://github.com/ldraney/lofi-stream-youtube">lofi-stream-youtube</a> |
       <a href="https://github.com/ldraney/lofi-stream-twitch">lofi-stream-twitch</a>
     </p>
-    <p>Server: 5.78.42.22 | Last updated: December 2024</p>
+    <p>Prod: 135.181.150.82 | Dev: 5.78.42.22 | Last updated: December 2025</p>
   </footer>
 
   <script>
