@@ -9,7 +9,6 @@ Central documentation hub and DevOps scripts for the lofi-stream project.
 ├── lofi-stream-youtube/     # Night city theme → YouTube (:99)
 ├── lofi-stream-twitch/      # Coffee shop theme → Twitch (:98)
 ├── lofi-stream-kick/        # Arcade theme → Kick (:97)
-├── lofi-stream-rumble/      # Library theme → Rumble (:96)
 ├── lofi-stream-dlive/       # Space station theme → DLive (:95)
 ├── lofi-stream-odysee/      # Underwater theme → Odysee (:94)
 ├── lofi-stream-frontend/    # Status page (served from VPS)
@@ -29,7 +28,6 @@ lofi-stream/
     ├── youtube.env # Stream key + RTMP URL
     ├── twitch.env  # Stream key + RTMP URL
     ├── kick.env    # Stream key + RTMP URL
-    ├── rumble.env  # Stream key + RTMP URL (needs followers)
     ├── dlive.env   # Stream key + RTMP URL
     └── odysee.env  # Stream key + RTMP URL
 ```
@@ -66,7 +64,7 @@ The dev server (5.78.42.22) uses a dedicated `lofidev` user for testing.
 
 ### Deploy/Test from Stream Repos
 
-From any stream repo (`lofi-stream-youtube`, `lofi-stream-twitch`, `lofi-stream-kick`, `lofi-stream-rumble`):
+From any stream repo (`lofi-stream-youtube`, `lofi-stream-twitch`, `lofi-stream-kick`, `lofi-stream-dlive`, `lofi-stream-odysee`):
 ```bash
 make deploy-dev    # Deploy repo to dev server
 make cleanup-dev   # Remove repo from dev server
@@ -144,7 +142,6 @@ ssh lofidev@5.78.42.22 'ls -la ~/streams/'
 - **YouTube Page:** https://ldraney.github.io/lofi-stream-youtube/
 - **Twitch Page:** https://ldraney.github.io/lofi-stream-twitch/
 - **Kick Page:** https://ldraney.github.io/lofi-stream-kick/
-- **Rumble Page:** https://ldraney.github.io/lofi-stream-rumble/
 - **DLive Page:** https://ldraney.github.io/lofi-stream-dlive/
 - **Odysee Page:** https://ldraney.github.io/lofi-stream-odysee/
 
@@ -155,7 +152,6 @@ ssh lofidev@5.78.42.22 'ls -la ~/streams/'
 | YouTube | :99 | virtual_speaker | 1.5 Mbps | LIVE |
 | Twitch | :98 | twitch_speaker | 2.5 Mbps | LIVE |
 | Kick | :97 | kick_speaker | 6.0 Mbps | LIVE |
-| Rumble | :96 | rumble_speaker | 4.5 Mbps | Needs followers |
 | DLive | :95 | dlive_speaker | 4.5 Mbps | LIVE |
 | Odysee | :94 | odysee_speaker | 3.5 Mbps | LIVE |
 
@@ -260,7 +256,6 @@ The partnership allows up to 15 minutes of content per segment. We turn this int
 | Night City | Cyberpunk/neon | Technology & humanity, modern alienation, finding meaning |
 | Coffee Shop | Cozy/warm | Presence, mindfulness, the art of living |
 | Arcade | Retro gaming | Play, spontaneity, not taking life too seriously |
-| Library | Quiet/studious | Eastern philosophy, meditation, wisdom traditions |
 | Space Station | Cosmic/vast | The universe, consciousness, interconnection |
 | Underwater | Flowing/calm | Going with the flow, water philosophy, naturalness |
 

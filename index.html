@@ -19,7 +19,6 @@
       --youtube: #ff0000;
       --twitch: #9146ff;
       --kick: #53fc18;
-      --rumble: #85c742;
     }
 
     * {
@@ -140,10 +139,6 @@
 
     .project-card.kick {
       border-left: 4px solid var(--kick);
-    }
-
-    .project-card.rumble {
-      border-left: 4px solid var(--rumble);
     }
 
     .project-card.docs {
@@ -431,28 +426,6 @@
         </div>
       </div>
 
-      <div class="project-card rumble">
-        <div class="project-header">
-          <span class="project-icon">📖</span>
-          <span class="project-title">lofi-stream-rumble</span>
-          <span class="status dev">READY</span>
-        </div>
-        <p class="project-description">
-          Cozy library/study theme with bookshelf, fireplace, and classical-inspired lofi.
-          Ready to stream 24/7 to Rumble at 720p.
-        </p>
-        <div style="margin-bottom: 1rem;">
-          <span class="tech-badge">HTML/CSS</span>
-          <span class="tech-badge">Web Audio API</span>
-          <span class="tech-badge">ffmpeg</span>
-          <span class="tech-badge">RTMP</span>
-        </div>
-        <div class="project-links">
-          <a href="https://github.com/ldraney/lofi-stream-rumble" target="_blank">GitHub</a>
-          <a href="https://ldraney.github.io/lofi-stream-rumble/" target="_blank">Live Page</a>
-        </div>
-      </div>
-
       <div class="project-card docs">
         <div class="project-header">
           <span class="project-icon">📚</span>
@@ -484,41 +457,35 @@ flowchart TB
         YT_REPO["lofi-stream-youtube<br/>🌃 Night City"]
         TW_REPO["lofi-stream-twitch<br/>☕ Coffee Shop"]
         KI_REPO["lofi-stream-kick<br/>🕹️ Arcade"]
-        RU_REPO["lofi-stream-rumble<br/>📖 Library"]
     end
 
     subgraph pages["GitHub Pages"]
         YT_PAGE["ldraney.github.io/lofi-stream-youtube"]
         TW_PAGE["ldraney.github.io/lofi-stream-twitch"]
         KI_PAGE["ldraney.github.io/lofi-stream-kick"]
-        RU_PAGE["ldraney.github.io/lofi-stream-rumble"]
     end
 
     subgraph vps["Hetzner CPX62 (135.181.150.82)"]
-        STREAMS["4 Stream Stacks<br/>:99 YouTube | :98 Twitch<br/>:97 Kick | :96 Rumble"]
+        STREAMS["5 Stream Stacks<br/>:99 YouTube | :98 Twitch | :97 Kick<br/>:95 DLive | :94 Odysee"]
     end
 
     subgraph platforms["Streaming Platforms"]
         YOUTUBE["YouTube"]
         TWITCH["Twitch"]
         KICK["Kick"]
-        RUMBLE["Rumble"]
     end
 
     YT_REPO --> YT_PAGE
     TW_REPO --> TW_PAGE
     KI_REPO --> KI_PAGE
-    RU_REPO --> RU_PAGE
 
     YT_PAGE --> STREAMS
     TW_PAGE --> STREAMS
     KI_PAGE --> STREAMS
-    RU_PAGE --> STREAMS
 
     STREAMS --> YOUTUBE
     STREAMS --> TWITCH
     STREAMS --> KICK
-    STREAMS --> RUMBLE
     </div>
   </section>
 
@@ -610,12 +577,10 @@ timeline
       </div>
       <ul>
         <li class="done">Create Kick repo with arcade theme</li>
-        <li class="done">Create Rumble repo with library theme</li>
-        <li>Create Kick account and start streaming</li>
-        <li>Create Rumble account (5 followers req) and start streaming</li>
-        <li>Add DLive stream (90/10 crypto)</li>
-        <li>Add Odysee stream (decentralized)</li>
-        <li>Target: 8 platforms on CPX62</li>
+        <li class="done">Add DLive stream (90/10 crypto)</li>
+        <li class="done">Add Odysee stream (decentralized)</li>
+        <li>Visual polish and theme improvements</li>
+        <li>Target: 6-8 platforms on CPX62</li>
       </ul>
     </div>
 
@@ -671,48 +636,55 @@ timeline
         <th>YouTube</th>
         <th>Twitch</th>
         <th>Kick</th>
-        <th>Rumble</th>
+        <th>DLive</th>
+        <th>Odysee</th>
       </tr>
       <tr>
         <td>Theme</td>
         <td>🌃 Night City</td>
         <td>☕ Coffee Shop</td>
         <td>🕹️ Arcade</td>
-        <td>📖 Library</td>
+        <td>🚀 Space Station</td>
+        <td>🌊 Underwater</td>
       </tr>
       <tr>
         <td>Color Palette</td>
         <td>Cool blues, purple</td>
         <td>Warm browns, amber</td>
         <td>Neon pink, cyan</td>
-        <td>Deep brown, gold</td>
+        <td>Deep space, aurora</td>
+        <td>Ocean blues, teal</td>
       </tr>
       <tr>
         <td>Audio Style</td>
         <td>Lo-fi pads, rain</td>
         <td>Jazz 7th chords</td>
         <td>Chiptune, 8-bit</td>
-        <td>Classical piano</td>
+        <td>Ambient space</td>
+        <td>Oceanic waves</td>
       </tr>
       <tr>
         <td>Display</td>
         <td>:99</td>
         <td>:98</td>
         <td>:97</td>
-        <td>:96</td>
+        <td>:95</td>
+        <td>:94</td>
       </tr>
       <tr>
         <td>Audio Sink</td>
         <td>virtual_speaker</td>
         <td>twitch_speaker</td>
         <td>kick_speaker</td>
-        <td>rumble_speaker</td>
+        <td>dlive_speaker</td>
+        <td>odysee_speaker</td>
       </tr>
       <tr>
         <td>Resolution</td>
         <td>720p @ 24fps</td>
         <td>720p @ 24fps</td>
         <td>720p @ 30fps</td>
+        <td>720p @ 24fps</td>
         <td>720p @ 24fps</td>
       </tr>
       <tr>
@@ -721,13 +693,15 @@ timeline
         <td>2.5 Mbps</td>
         <td>6.0 Mbps</td>
         <td>4.5 Mbps</td>
+        <td>3.5 Mbps</td>
       </tr>
       <tr>
         <td>Status</td>
         <td>LIVE</td>
         <td>LIVE</td>
-        <td>Ready</td>
-        <td>Ready</td>
+        <td>LIVE</td>
+        <td>LIVE</td>
+        <td>LIVE</td>
       </tr>
     </table>
   </section>
