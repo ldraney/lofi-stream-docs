@@ -6,13 +6,15 @@ Central documentation hub and DevOps scripts for the lofi-stream project.
 
 ```
 ~/
-├── lofi-stream-youtube/     # Night city theme → YouTube (:99)
-├── lofi-stream-twitch/      # Coffee shop theme → Twitch (:98)
-├── lofi-stream-kick/        # Arcade theme → Kick (:97)
-├── lofi-stream-dlive/       # Space station theme → DLive (:95)
-├── lofi-stream-odysee/      # Underwater theme → Odysee (:94)
+├── lofi-stream-youtube/     # Night city theme → YouTube
+├── lofi-stream-twitch/      # Coffee shop theme → Twitch
+├── lofi-stream-kick/        # Arcade theme → Kick
+├── lofi-stream-dlive/       # Space station theme → DLive
+├── lofi-stream-odysee/      # Underwater theme → Odysee
 ├── lofi-stream-frontend/    # Status page (served from VPS)
-└── lofi-stream-docs/        # This repo (documentation + DevOps)
+├── lofi-stream-docs/        # This repo (documentation + DevOps)
+├── lofi-stream-infra/       # Terraform + Ansible infrastructure
+└── lofi-watts-content/      # Alan Watts audio content management
 ```
 
 ## Secrets
@@ -33,13 +35,91 @@ lofi-stream/
 ```
 
 SSH key: `~/api-secrets/hetzner-server/id_ed25519`
+Hetzner API token: `~/api-secrets/hetzner-server/hcloud_token`
 
 ## Infrastructure
 
-| Server | IP | Purpose | Cost |
-|--------|-----|---------|------|
-| Production (CPX62) | 135.181.150.82 | Live streams | $42.99/mo |
-| Dev (CX22) | 5.78.42.22 | Testing | €4.50/mo |
+**Status: Rebuilding** - All servers deleted 2024-12-19. Moving to isolated single-server-per-stream architecture.
+
+### Architecture Decision: Isolation Over Consolidation
+
+**Previous approach (deprecated):**
+- One CPX62 server ($43/mo) running all 5 streams
+- Shared PulseAudio caused audio routing conflicts
+- One stream failure could affect others
+- Complex debugging across shared resources
+
+**New approach:**
+- 5 CPX11 servers (~$5/mo each = ~$25/mo total)
+- Each server runs exactly ONE stream
+- No audio sink conflicts (each uses `virtual_speaker`)
+- Isolated failures - one stream down doesn't affect others
+- Simpler debugging and maintenance
+
+### Target Infrastructure
+
+| Server | Platform | Theme | Cost | Status |
+|--------|----------|-------|------|--------|
+| lofi-youtube | YouTube | night_city | $4.99/mo | Not deployed |
+| lofi-twitch | Twitch | coffee_shop | $4.99/mo | Not deployed |
+| lofi-kick | Kick | arcade | $4.99/mo | Not deployed |
+| lofi-dlive | DLive | space_station | $4.99/mo | Not deployed |
+| lofi-odysee | Odysee | underwater | $4.99/mo | Not deployed |
+
+**Total target cost:** ~$25/mo (down from $48/mo)
+
+### Infrastructure as Code
+
+All infrastructure managed via [lofi-stream-infra](https://github.com/ldraney/lofi-stream-infra):
+
+```
+lofi-stream-infra/
+├── terraform/           # Server provisioning
+│   ├── main.tf          # Hetzner provider config
+│   ├── servers.tf       # CPX11 server definitions
+│   ├── variables.tf     # Stream configs (enable/disable)
+│   └── outputs.tf       # IPs, SSH commands
+│
+└── ansible/             # Configuration management (TODO)
+    ├── playbooks/
+    │   ├── provision.yml   # Base packages, users
+    │   └── deploy.yml      # Deploy stream code
+    └── roles/
+        ├── common/         # xvfb, chromium, ffmpeg, pulseaudio
+        ├── stream/         # systemd service setup
+        └── watts-audio/    # Alan Watts content
+```
+
+### Deployment Flow
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  1. TERRAFORM - Create infrastructure                           │
+│     terraform apply → Creates CPX11 servers on Hetzner          │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  2. ANSIBLE - Configure servers                                 │
+│     ansible-playbook provision.yml → Installs packages          │
+│     ansible-playbook deploy.yml → Deploys stream code           │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│  3. STREAM REPOS - Application code                             │
+│     lofi-stream-{platform}/server/stream.sh → The actual stream │
+│     Tested locally before deploy, versioned in git              │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Lessons Learned (2024-12-19)
+
+1. **Never write scripts via SSH heredocs** - Escaping issues break shebangs
+2. **Always use git for scripts** - Ansible pulls from repos, not inline strings
+3. **Test on dev first** - Don't experiment on production
+4. **Isolation beats consolidation** - $25/mo for 5 reliable servers beats $43/mo for 1 fragile server
+5. **Idempotent configuration** - Ansible playbooks can be re-run safely
 
 ## Repository Contents
 
@@ -58,81 +138,21 @@ lofi-stream-docs/
     └── check-streams.sh   # Health check for production streams
 ```
 
-## Dev Server Usage
-
-The dev server (5.78.42.22) uses a dedicated `lofidev` user for testing.
-
-### Deploy/Test from Stream Repos
-
-From any stream repo (`lofi-stream-youtube`, `lofi-stream-twitch`, `lofi-stream-kick`, `lofi-stream-dlive`, `lofi-stream-odysee`):
-```bash
-make deploy-dev    # Deploy repo to dev server
-make cleanup-dev   # Remove repo from dev server
-make dev-status    # Show what's deployed
-make dev-reset     # Full reset (as root)
-```
-
-### SSH Access
-```bash
-# As lofidev (for testing)
-ssh -i ~/api-secrets/hetzner-server/id_ed25519 lofidev@5.78.42.22
-
-# As root (for admin)
-ssh -i ~/api-secrets/hetzner-server/id_ed25519 root@5.78.42.22
-```
-
-### Dev Server Auto-Reset
-
-The dev server resets daily at 4 AM UTC:
-- Kills all lofidev processes (except SSH)
-- Cleans home directory (preserves .ssh, .bashrc)
-- Recreates empty `streams/` directory
-
-Manual reset:
-```bash
-ssh root@5.78.42.22 '/opt/scripts/reset-dev.sh'
-```
-
-View logs:
-```bash
-ssh root@5.78.42.22 'cat /var/log/dev-reset.log'
-```
-
-## Setting Up a New Dev Server
-
-If you need to recreate the dev server:
-
-```bash
-# 1. Copy scripts to server
-scp scripts/*.sh root@5.78.42.22:/tmp/
-
-# 2. SSH in and run setup
-ssh root@5.78.42.22
-
-# Create lofidev user
-bash /tmp/setup-dev-user.sh
-
-# Install reset script and cron
-bash /tmp/install-dev-reset.sh
-
-# 3. Add your SSH key to lofidev
-cat ~/.ssh/id_ed25519.pub >> /home/lofidev/.ssh/authorized_keys
-```
-
 ## Quick Commands
 
 ```bash
 # View docs locally
 cd ~/lofi-stream-docs && python3 -m http.server 8080
 
-# Check production streams
-ssh root@135.181.150.82 'systemctl status lofi-stream lofi-stream-twitch'
+# Deploy infrastructure (once Ansible is set up)
+cd ~/lofi-stream-infra/terraform && terraform apply
+cd ~/lofi-stream-infra/ansible && ansible-playbook playbooks/site.yml
 
-# Run health check on production
-ssh root@135.181.150.82 '/opt/scripts/check-streams.sh'
+# SSH to a stream server (replace with actual IP after deploy)
+ssh -i ~/api-secrets/hetzner-server/id_ed25519 root@<server-ip>
 
-# Check dev server status
-ssh lofidev@5.78.42.22 'ls -la ~/streams/'
+# Check stream status on a server
+ssh root@<server-ip> 'systemctl status lofi-stream'
 ```
 
 ## Live Sites
@@ -147,59 +167,42 @@ ssh lofidev@5.78.42.22 'ls -la ~/streams/'
 
 ## Stream Configuration
 
-| Platform | Display | Audio Sink | Bitrate | Status |
-|----------|---------|------------|---------|--------|
-| YouTube | :99 | virtual_speaker | 1.5 Mbps | LIVE |
-| Twitch | :98 | twitch_speaker | 2.5 Mbps | LIVE |
-| Kick | :97 | kick_speaker | 6.0 Mbps | LIVE |
-| DLive | :95 | dlive_speaker | 4.5 Mbps | LIVE |
-| Odysee | :94 | odysee_speaker | 3.5 Mbps | LIVE |
+With the new isolated architecture, each stream runs on its own server:
+
+| Platform | Server | Theme | Audio Sink | Bitrate | Status |
+|----------|--------|-------|------------|---------|--------|
+| YouTube | lofi-youtube | night_city | virtual_speaker | 1.5 Mbps | Not deployed |
+| Twitch | lofi-twitch | coffee_shop | virtual_speaker | 2.5 Mbps | Not deployed |
+| Kick | lofi-kick | arcade | virtual_speaker | 6.0 Mbps | Not deployed |
+| DLive | lofi-dlive | space_station | virtual_speaker | 4.5 Mbps | Not deployed |
+| Odysee | lofi-odysee | underwater | virtual_speaker | 3.5 Mbps | Not deployed |
+
+**Note:** All servers use `virtual_speaker` as the audio sink since there's only one stream per server - no routing conflicts possible.
 
 ## Troubleshooting
 
-### Audio Routing Issue (No Sound on Streams)
+### Old Multi-Stream Audio Issues (Deprecated)
 
-**Symptom:** One or more streams have no audio, but video works fine.
+The old shared-server setup had PulseAudio routing conflicts where audio would go to wrong sinks.
+**This is no longer an issue** with the new one-stream-per-server architecture.
 
-**Root Cause:** PulseAudio's `module-stream-restore` remembers where apps sent audio previously. After a restart, it may restore all Chromium instances to the wrong sink (e.g., all audio goes to `kick_speaker` instead of each stream's dedicated sink).
+### Current Architecture Debugging
 
-**Diagnosis:**
+Each server runs independently. To debug a stream:
+
 ```bash
-# Check if sinks are RUNNING (have audio) or IDLE (no audio)
-ssh root@135.181.150.82 'pactl list sinks short'
+# Check service status
+ssh root@<server-ip> 'systemctl status lofi-stream'
 
-# Check which sink each browser is using
-ssh root@135.181.150.82 'pactl list sink-inputs | grep -E "Sink Input|window.x11.display"'
+# View logs
+ssh root@<server-ip> 'journalctl -u lofi-stream -f'
+
+# Check processes
+ssh root@<server-ip> 'ps aux | grep -E "(ffmpeg|chromium|Xvfb)"'
+
+# Check audio
+ssh root@<server-ip> 'pactl list sink-inputs short'
 ```
-
-Expected output - each display should map to its own sink:
-- `:99` (YouTube) → `virtual_speaker`
-- `:98` (Twitch) → `twitch_speaker`
-- `:97` (Kick) → `kick_speaker`
-- `:95` (DLive) → `dlive_speaker`
-- `:94` (Odysee) → `odysee_speaker`
-
-**Manual Fix:**
-```bash
-# Get sink-input IDs and their displays
-ssh root@135.181.150.82 'pactl list sink-inputs | grep -E "Sink Input|window.x11.display"'
-
-# Move each sink-input to correct sink (replace XX with actual sink-input ID)
-ssh root@135.181.150.82 'pactl move-sink-input XX virtual_speaker'   # for :99
-ssh root@135.181.150.82 'pactl move-sink-input XX twitch_speaker'    # for :98
-ssh root@135.181.150.82 'pactl move-sink-input XX kick_speaker'      # for :97
-ssh root@135.181.150.82 'pactl move-sink-input XX dlive_speaker'     # for :95
-ssh root@135.181.150.82 'pactl move-sink-input XX odysee_speaker'    # for :94
-```
-
-**Automated Prevention (implemented 2024-12-19):**
-
-Each `stream.sh` has three-layer defense:
-1. **Clear stream-restore DB** - `rm -f ~/.config/pulse/*-stream-volumes.tdb` prevents PulseAudio from remembering wrong routing
-2. **PULSE_SINK env var** - `PULSE_SINK=$SINK_NAME chromium-browser` forces correct sink at launch
-3. **Aggressive routing** - `route_audio()` function retries 5 times before starting background monitor
-
-See GitHub issue: https://github.com/ldraney/lofi-stream-docs/issues/4
 
 ---
 
@@ -330,12 +333,11 @@ Current: 5 platforms on $50/mo server. Expand only when partnership revenue cove
 
 | Item | Cost |
 |------|------|
-| Production VPS (CPX62) | $42.99/mo |
-| Dev VPS (CX22) | ~$5/mo |
+| 5x CPX11 servers | ~$25/mo |
 | Domain/DNS | Free (duckdns) |
-| **Total** | ~$48/mo |
+| **Total** | ~$25/mo |
 
-No additional costs until we have revenue to justify them.
+**Savings:** ~$23/mo compared to old shared-server approach ($48/mo), with better reliability and isolation.
 
 ---
 
