@@ -159,6 +159,52 @@ ssh lofidev@5.78.42.22 'ls -la ~/streams/'
 | DLive | :95 | dlive_speaker | 4.5 Mbps | LIVE |
 | Odysee | :94 | odysee_speaker | 3.5 Mbps | LIVE |
 
+## Troubleshooting
+
+### Audio Routing Issue (No Sound on Streams)
+
+**Symptom:** One or more streams have no audio, but video works fine.
+
+**Root Cause:** PulseAudio's `module-stream-restore` remembers where apps sent audio previously. After a restart, it may restore all Chromium instances to the wrong sink (e.g., all audio goes to `kick_speaker` instead of each stream's dedicated sink).
+
+**Diagnosis:**
+```bash
+# Check if sinks are RUNNING (have audio) or IDLE (no audio)
+ssh root@135.181.150.82 'pactl list sinks short'
+
+# Check which sink each browser is using
+ssh root@135.181.150.82 'pactl list sink-inputs | grep -E "Sink Input|window.x11.display"'
+```
+
+Expected output - each display should map to its own sink:
+- `:99` (YouTube) → `virtual_speaker`
+- `:98` (Twitch) → `twitch_speaker`
+- `:97` (Kick) → `kick_speaker`
+- `:95` (DLive) → `dlive_speaker`
+- `:94` (Odysee) → `odysee_speaker`
+
+**Manual Fix:**
+```bash
+# Get sink-input IDs and their displays
+ssh root@135.181.150.82 'pactl list sink-inputs | grep -E "Sink Input|window.x11.display"'
+
+# Move each sink-input to correct sink (replace XX with actual sink-input ID)
+ssh root@135.181.150.82 'pactl move-sink-input XX virtual_speaker'   # for :99
+ssh root@135.181.150.82 'pactl move-sink-input XX twitch_speaker'    # for :98
+ssh root@135.181.150.82 'pactl move-sink-input XX kick_speaker'      # for :97
+ssh root@135.181.150.82 'pactl move-sink-input XX dlive_speaker'     # for :95
+ssh root@135.181.150.82 'pactl move-sink-input XX odysee_speaker'    # for :94
+```
+
+**Automated Prevention (implemented 2024-12-19):**
+
+Each `stream.sh` has three-layer defense:
+1. **Clear stream-restore DB** - `rm -f ~/.config/pulse/*-stream-volumes.tdb` prevents PulseAudio from remembering wrong routing
+2. **PULSE_SINK env var** - `PULSE_SINK=$SINK_NAME chromium-browser` forces correct sink at launch
+3. **Aggressive routing** - `route_audio()` function retries 5 times before starting background monitor
+
+See GitHub issue: https://github.com/ldraney/lofi-stream-docs/issues/4
+
 ---
 
 ## Roadmap: Content Partnerships
