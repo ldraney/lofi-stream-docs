@@ -40,34 +40,33 @@ Hetzner API token: `~/api-secrets/hetzner-server/hcloud_token`
 
 ## Infrastructure
 
-**Status: Rebuilding** - All servers deleted 2024-12-19. Moving to isolated single-server-per-stream architecture.
+**Status: Operational** - Isolated single-server-per-stream architecture deployed. Kick stream live as of 2024-12-19.
 
-### Architecture Decision: Isolation Over Consolidation
+### Architecture: Isolation Over Consolidation
 
 **Previous approach (deprecated):**
 - One CPX62 server ($43/mo) running all 5 streams
 - Shared PulseAudio caused audio routing conflicts
 - One stream failure could affect others
-- Complex debugging across shared resources
 
-**New approach:**
+**Current approach:**
 - 5 CPX11 servers (~$5/mo each = ~$25/mo total)
 - Each server runs exactly ONE stream
 - No audio sink conflicts (each uses `virtual_speaker`)
 - Isolated failures - one stream down doesn't affect others
-- Simpler debugging and maintenance
+- Managed via Terraform + Ansible
 
-### Target Infrastructure
+### Current Infrastructure
 
-| Server | Platform | Theme | Cost | Status |
-|--------|----------|-------|------|--------|
-| lofi-youtube | YouTube | night_city | $4.99/mo | Not deployed |
-| lofi-twitch | Twitch | coffee_shop | $4.99/mo | Not deployed |
-| lofi-kick | Kick | arcade | $4.99/mo | Not deployed |
-| lofi-dlive | DLive | space_station | $4.99/mo | Not deployed |
-| lofi-odysee | Odysee | underwater | $4.99/mo | Not deployed |
+| Server | Platform | Theme | IP | Cost | Status |
+|--------|----------|-------|-----|------|--------|
+| lofi-kick | Kick | arcade | 46.62.216.25 | $4.99/mo | ✅ Live |
+| lofi-youtube | YouTube | night_city | - | $4.99/mo | Not deployed |
+| lofi-twitch | Twitch | coffee_shop | - | $4.99/mo | Not deployed |
+| lofi-dlive | DLive | space_station | - | $4.99/mo | Not deployed |
+| lofi-odysee | Odysee | underwater | - | $4.99/mo | Not deployed |
 
-**Total target cost:** ~$25/mo (down from $48/mo)
+**Current cost:** $4.99/mo (1 server) | **Target:** ~$25/mo (all 5)
 
 ### Infrastructure as Code
 
@@ -75,20 +74,22 @@ All infrastructure managed via [lofi-stream-infra](https://github.com/ldraney/lo
 
 ```
 lofi-stream-infra/
-├── terraform/           # Server provisioning
-│   ├── main.tf          # Hetzner provider config
-│   ├── servers.tf       # CPX11 server definitions
-│   ├── variables.tf     # Stream configs (enable/disable)
-│   └── outputs.tf       # IPs, SSH commands
+├── terraform/              # Server provisioning
+│   ├── main.tf             # Hetzner provider config
+│   ├── servers.tf          # CPX11 servers + cloud-init
+│   ├── variables.tf        # Stream configs (enable/disable)
+│   └── outputs.tf          # IPs, SSH commands
 │
-└── ansible/             # Configuration management (TODO)
+└── ansible/                # Configuration management
+    ├── ansible.cfg         # SSH config
+    ├── inventory/hosts.yml # Server IPs
+    ├── group_vars/all.yml  # Common variables
     ├── playbooks/
-    │   ├── provision.yml   # Base packages, users
-    │   └── deploy.yml      # Deploy stream code
-    └── roles/
-        ├── common/         # xvfb, chromium, ffmpeg, pulseaudio
-        ├── stream/         # systemd service setup
-        └── watts-audio/    # Alan Watts content
+    │   └── deploy.yml      # Main deployment playbook
+    └── roles/stream/       # Stream deployment role
+        ├── tasks/main.yml
+        ├── templates/lofi-stream.service.j2
+        └── handlers/main.yml
 ```
 
 ### Deployment Flow
@@ -96,21 +97,22 @@ lofi-stream-infra/
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  1. TERRAFORM - Create infrastructure                           │
-│     terraform apply → Creates CPX11 servers on Hetzner          │
+│     cd terraform && terraform apply                             │
+│     Creates CPX11 server + installs base packages via cloud-init│
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│  2. ANSIBLE - Configure servers                                 │
-│     ansible-playbook provision.yml → Installs packages          │
-│     ansible-playbook deploy.yml → Deploys stream code           │
+│  2. UPDATE INVENTORY - Get IPs from terraform output            │
+│     terraform output server_ips                                 │
+│     Update ansible/inventory/hosts.yml with new IPs             │
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│  3. STREAM REPOS - Application code                             │
-│     lofi-stream-{platform}/server/stream.sh → The actual stream │
-│     Tested locally before deploy, versioned in git              │
+│  3. ANSIBLE - Deploy stream                                     │
+│     cd ansible && ansible-playbook playbooks/deploy.yml         │
+│     Clones repo, creates systemd service, starts stream         │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -118,9 +120,10 @@ lofi-stream-infra/
 
 1. **Never write scripts via SSH heredocs** - Escaping issues break shebangs
 2. **Always use git for scripts** - Ansible pulls from repos, not inline strings
-3. **Test on dev first** - Don't experiment on production
-4. **Isolation beats consolidation** - $25/mo for 5 reliable servers beats $43/mo for 1 fragile server
-5. **Idempotent configuration** - Ansible playbooks can be re-run safely
+3. **Openbox required** - Chromium needs a window manager to render properly
+4. **PulseAudio config file approach** - More reliable than runtime pactl commands
+5. **Isolation beats consolidation** - $25/mo for 5 reliable servers beats $43/mo for 1 fragile server
+6. **Idempotent configuration** - Ansible playbooks can be re-run safely
 
 ## Repository Contents
 
@@ -145,15 +148,24 @@ lofi-stream-docs/
 # View docs locally
 cd ~/lofi-stream-docs && python3 -m http.server 8080
 
-# Deploy infrastructure (once Ansible is set up)
+# Deploy new server with Terraform
 cd ~/lofi-stream-infra/terraform && terraform apply
-cd ~/lofi-stream-infra/ansible && ansible-playbook playbooks/site.yml
 
-# SSH to a stream server (replace with actual IP after deploy)
-ssh -i ~/api-secrets/hetzner-server/id_ed25519 root@<server-ip>
+# Deploy stream with Ansible
+cd ~/lofi-stream-infra/ansible && ansible-playbook playbooks/deploy.yml -l lofi-kick
 
-# Check stream status on a server
-ssh root@<server-ip> 'systemctl status lofi-stream'
+# SSH to kick server
+ssh -i ~/api-secrets/hetzner-server/id_ed25519 root@46.62.216.25
+
+# Check stream status
+ssh root@46.62.216.25 'systemctl status lofi-stream'
+
+# View stream logs
+ssh root@46.62.216.25 'journalctl -u lofi-stream -f'
+
+# Take screenshot
+ssh root@46.62.216.25 'DISPLAY=:97 import -window root /tmp/screen.png'
+scp root@46.62.216.25:/tmp/screen.png .
 ```
 
 ## Live Sites
@@ -172,11 +184,13 @@ With the new isolated architecture, each stream runs on its own server:
 
 | Platform | Server | Theme | Audio Sink | Bitrate | Status |
 |----------|--------|-------|------------|---------|--------|
+| Kick | lofi-kick | arcade | virtual_speaker | 6.0 Mbps | ✅ Live |
 | YouTube | lofi-youtube | night_city | virtual_speaker | 1.5 Mbps | Not deployed |
 | Twitch | lofi-twitch | coffee_shop | virtual_speaker | 2.5 Mbps | Not deployed |
-| Kick | lofi-kick | arcade | virtual_speaker | 6.0 Mbps | Not deployed |
 | DLive | lofi-dlive | space_station | virtual_speaker | 4.5 Mbps | Not deployed |
 | Odysee | lofi-odysee | underwater | virtual_speaker | 3.5 Mbps | Not deployed |
+
+**Live stream:** https://kick.com/skywalker939
 
 **Note:** All servers use `virtual_speaker` as the audio sink since there's only one stream per server - no routing conflicts possible.
 
@@ -306,7 +320,7 @@ The partnership allows up to 15 minutes of content per segment. We turn this int
 
 ### Phase 1: Add Radio Features to Live Streams
 
-**Status:** Segmentation pipeline built! 5 pilot lectures segmented. Infrastructure rebuilding.
+**Status:** Kick stream live! Segmentation pipeline built. Infrastructure operational with Terraform + Ansible.
 
 - [x] **Build segmentation pipeline** - faster-whisper + Claude analysis ([lofi-stream-segmentation](https://github.com/ldraney/lofi-stream-segmentation))
 - [x] **Segment pilot lectures** - 5 lectures → 17 segments (v0.1.0 released)
@@ -377,11 +391,13 @@ Current: 5 platforms on $50/mo server. Expand only when partnership revenue cove
 
 | Item | Cost |
 |------|------|
-| 5x CPX11 servers | ~$25/mo |
+| 1x CPX11 server (kick) | $4.99/mo |
 | Domain/DNS | Free (duckdns) |
-| **Total** | ~$25/mo |
+| **Current Total** | ~$5/mo |
 
-**Savings:** ~$23/mo compared to old shared-server approach ($48/mo), with better reliability and isolation.
+**Target (all 5 streams):** ~$25/mo
+
+**Savings vs old approach:** ~$43/mo less than single CPX62 ($48/mo), with better reliability and isolation.
 
 ---
 
