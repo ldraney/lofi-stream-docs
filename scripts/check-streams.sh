@@ -13,6 +13,18 @@ set -e
 SERVICES=(
     "lofi-stream"
     "lofi-stream-twitch"
+    "lofi-stream-kick"
+    "lofi-stream-dlive"
+    "lofi-stream-odysee"
+)
+
+# Display mapping
+declare -A DISPLAYS=(
+    [":99"]="YouTube"
+    [":98"]="Twitch"
+    [":97"]="Kick"
+    [":95"]="DLive"
+    [":94"]="Odysee"
 )
 
 # Colors for output
@@ -68,7 +80,7 @@ check_display() {
 check_audio_sinks() {
     if command -v pactl &> /dev/null; then
         local sinks=$(pactl list sinks short 2>/dev/null | wc -l)
-        if [[ "$sinks" -ge 2 ]]; then
+        if [[ "$sinks" -ge "${#SERVICES[@]}" ]]; then
             echo -e "  ${GREEN}[OK]${NC} $sinks PulseAudio sink(s) configured"
             return 0
         else
@@ -134,8 +146,9 @@ echo ""
 # Check processes
 echo "Processes:"
 check_ffmpeg_processes || ((FAILURES++))
-check_display ":99" "YouTube" || ((FAILURES++))
-check_display ":98" "Twitch" || ((FAILURES++))
+for display in "${!DISPLAYS[@]}"; do
+    check_display "$display" "${DISPLAYS[$display]}" || ((FAILURES++))
+done
 check_audio_sinks || true  # Don't count as failure
 
 # Show resource usage
