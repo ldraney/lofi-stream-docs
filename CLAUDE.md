@@ -243,12 +243,26 @@ The partnership allows up to 15 minutes of content per segment. We turn this int
 - [ ] **Swap in real content** - Replace placeholders with licensed Watts lectures
 - [ ] **Monitor and optimize** - Which talks get best engagement?
 
-### Phase 4: Growth
+### Phase 4: Growth (If Partnership Works)
 
 - [ ] **Clips/Shorts** - Extract powerful moments for YouTube Shorts, TikTok, Reels
 - [ ] **Cross-promote** - Each stream mentions the others
 - [ ] **Community Discord** - For people who want to discuss the ideas
 - [ ] **More partnerships** - Approach other estates (Terence McKenna, Joseph Campbell, Ram Dass)
+
+### Phase 5: Platform Expansion (When Revenue Justifies)
+
+Current: 5 platforms on $50/mo server. Expand only when partnership revenue covers costs.
+
+**Potential platforms to add:**
+- [ ] Facebook Live
+- [ ] X (Twitter) Live
+- [ ] LinkedIn Live
+- [ ] Trovo
+- [ ] TikTok Live
+- [ ] Instagram Live (requires mobile workaround)
+
+**Note:** Radio format is low-maintenance once running. Design updates are creative choice, not required work. Scale when it makes financial sense, not before.
 
 ### Revenue Model (All Aligned with Mission)
 
