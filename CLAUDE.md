@@ -30,8 +30,8 @@ lofi-stream/
     ├── twitch.env  # Stream key + RTMP URL
     ├── kick.env    # Stream key + RTMP URL
     ├── rumble.env  # Stream key + RTMP URL (needs followers)
-    ├── dlive.env   # Stream key + RTMP URL (pending)
-    └── odysee.env  # Stream key + RTMP URL (pending)
+    ├── dlive.env   # Stream key + RTMP URL
+    └── odysee.env  # Stream key + RTMP URL
 ```
 
 SSH key: `~/api-secrets/hetzner-server/id_ed25519`
@@ -156,8 +156,8 @@ ssh lofidev@5.78.42.22 'ls -la ~/streams/'
 | Twitch | :98 | twitch_speaker | 2.5 Mbps | LIVE |
 | Kick | :97 | kick_speaker | 6.0 Mbps | LIVE |
 | Rumble | :96 | rumble_speaker | 4.5 Mbps | Needs followers |
-| DLive | :95 | dlive_speaker | 4.5 Mbps | Ready |
-| Odysee | :94 | odysee_speaker | 3.5 Mbps | Ready |
+| DLive | :95 | dlive_speaker | 4.5 Mbps | LIVE |
+| Odysee | :94 | odysee_speaker | 3.5 Mbps | LIVE |
 
 ---
 
