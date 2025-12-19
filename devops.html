@@ -232,8 +232,8 @@
           <tr><td>Cost</td><td>$42.99/month</td></tr>
           <tr><td>Location</td><td>Hetzner EU Central (Helsinki)</td></tr>
           <tr><td>OS</td><td>Ubuntu 24.04 LTS</td></tr>
-          <tr><td>Streams</td><td>YouTube + Twitch (active)</td></tr>
-          <tr><td>Capacity</td><td>16-20 simultaneous streams</td></tr>
+          <tr><td>Streams</td><td>YouTube, Twitch, Kick, DLive, Odysee (5 active)</td></tr>
+          <tr><td>Capacity</td><td>~8 streams (quality themes)</td></tr>
         </table>
         <pre><code>ssh -i ~/api-secrets/hetzner-server/id_ed25519 root@135.181.150.82</code></pre>
       </div>
@@ -422,68 +422,217 @@ flowchart TB
     FF2 -->|"RTMP"| TW["Twitch Live"]
     </div>
 
-    <h3>Process Isolation</h3>
+    <h3>Process Isolation (5 Active Streams)</h3>
     <table>
       <tr>
-        <th>Resource</th>
-        <th>YouTube Stack</th>
-        <th>Twitch Stack</th>
-        <th>Conflicts?</th>
+        <th>Platform</th>
+        <th>Display</th>
+        <th>Audio Sink</th>
+        <th>Chromium Data Dir</th>
+        <th>Theme</th>
       </tr>
       <tr>
-        <td>X11 Display</td>
+        <td>YouTube</td>
         <td><code>:99</code></td>
-        <td><code>:98</code></td>
-        <td>No - separate displays</td>
-      </tr>
-      <tr>
-        <td>PulseAudio Sink</td>
         <td><code>virtual_speaker</code></td>
-        <td><code>twitch_speaker</code></td>
-        <td>No - named sinks</td>
-      </tr>
-      <tr>
-        <td>Chromium Data Dir</td>
         <td>Default</td>
-        <td><code>/tmp/chromium-twitch</code></td>
-        <td>No - separate dirs</td>
+        <td>Night City</td>
       </tr>
       <tr>
-        <td>systemd Service</td>
-        <td><code>lofi-stream.service</code></td>
-        <td><code>lofi-stream-twitch.service</code></td>
-        <td>No - independent</td>
+        <td>Twitch</td>
+        <td><code>:98</code></td>
+        <td><code>twitch_speaker</code></td>
+        <td><code>/tmp/chromium-twitch</code></td>
+        <td>Coffee Shop</td>
+      </tr>
+      <tr>
+        <td>Kick</td>
+        <td><code>:97</code></td>
+        <td><code>kick_speaker</code></td>
+        <td><code>/tmp/chromium-kick</code></td>
+        <td>Arcade</td>
+      </tr>
+      <tr>
+        <td>DLive</td>
+        <td><code>:95</code></td>
+        <td><code>dlive_speaker</code></td>
+        <td><code>/tmp/chromium-dlive</code></td>
+        <td>Space Station</td>
+      </tr>
+      <tr>
+        <td>Odysee</td>
+        <td><code>:94</code></td>
+        <td><code>odysee_speaker</code></td>
+        <td><code>/tmp/chromium-odysee</code></td>
+        <td>Underwater</td>
+      </tr>
+      <tr>
+        <td><em>Rumble</em></td>
+        <td><code>:96</code></td>
+        <td><code>rumble_speaker</code></td>
+        <td><code>/tmp/chromium-rumble</code></td>
+        <td>Library (pending 5 followers)</td>
       </tr>
     </table>
 
-    <h3>Resource Usage Per Stream</h3>
+    <h3>Resource Usage Per Stream (Measured)</h3>
     <table>
       <tr>
         <th>Process</th>
         <th>CPU</th>
         <th>RAM</th>
+        <th>Notes</th>
       </tr>
       <tr>
         <td>Xvfb</td>
         <td>~2-4%</td>
         <td>~50MB</td>
+        <td>Minimal overhead</td>
       </tr>
       <tr>
-        <td>Chromium (all processes)</td>
-        <td>~25-35%</td>
-        <td>~250-350MB</td>
+        <td>Chromium (browser + GPU + renderer)</td>
+        <td>~30-224%</td>
+        <td>~500-600MB</td>
+        <td>Varies heavily by theme complexity</td>
       </tr>
       <tr>
         <td>FFmpeg (x264 encoding)</td>
-        <td>~50-60%</td>
-        <td>~130-250MB</td>
+        <td>~58-67%</td>
+        <td>~150-750MB</td>
+        <td>Varies by bitrate (1.5-6 Mbps)</td>
       </tr>
       <tr>
         <td><strong>Total per stream</strong></td>
-        <td><strong>~0.7-0.8 vCPU</strong></td>
-        <td><strong>~500-700MB</strong></td>
+        <td><strong>~1-2 vCPU</strong></td>
+        <td><strong>~700-1400MB</strong></td>
+        <td>Quality themes use more</td>
       </tr>
     </table>
+    <p><em>With 5 streams: ~68% CPU, ~4GB RAM on CPX62 (16 vCPU, 32GB).</em></p>
+  </section>
+
+  <section id="theme-performance">
+    <h2>Theme Performance Analysis</h2>
+    <p>Each theme has different CPU requirements based on animation complexity. Understanding this helps plan capacity.</p>
+
+    <h3>Per-Stream CPU Breakdown (Dec 2025)</h3>
+    <table>
+      <tr>
+        <th>Platform</th>
+        <th>Theme</th>
+        <th>FFmpeg CPU</th>
+        <th>Chromium CPU</th>
+        <th>Total</th>
+        <th>Notes</th>
+      </tr>
+      <tr>
+        <td>DLive</td>
+        <td>Space Station</td>
+        <td>~67%</td>
+        <td>~224%</td>
+        <td><strong>High</strong></td>
+        <td>Most complex - SVG animations, blur filters, 3 star layers</td>
+      </tr>
+      <tr>
+        <td>Kick</td>
+        <td>Arcade</td>
+        <td>~66%</td>
+        <td>~35%</td>
+        <td>Medium</td>
+        <td>Highest bitrate (6 Mbps)</td>
+      </tr>
+      <tr>
+        <td>Odysee</td>
+        <td>Underwater</td>
+        <td>~66%</td>
+        <td>~32%</td>
+        <td>Medium</td>
+        <td>Particle effects</td>
+      </tr>
+      <tr>
+        <td>YouTube</td>
+        <td>Night City</td>
+        <td>~65%</td>
+        <td>~58%</td>
+        <td>Medium</td>
+        <td>Rain drops, city lights</td>
+      </tr>
+      <tr>
+        <td>Twitch</td>
+        <td>Coffee Shop</td>
+        <td>~58%</td>
+        <td>~43%</td>
+        <td><strong>Low</strong></td>
+        <td>Simpler animations, steam effects</td>
+      </tr>
+    </table>
+    <p><em>Note: Chromium CPU >100% indicates multi-threaded rendering across multiple cores.</em></p>
+
+    <h3>CPU-Heavy CSS/JS Features</h3>
+    <p>These features significantly increase Chromium CPU usage:</p>
+    <table>
+      <tr>
+        <th>Feature</th>
+        <th>CPU Impact</th>
+        <th>Example</th>
+      </tr>
+      <tr>
+        <td>SVG path animation (<code>d:</code> attribute)</td>
+        <td><strong>Very High</strong></td>
+        <td>DLive waveform animation</td>
+      </tr>
+      <tr>
+        <td><code>filter: blur()</code></td>
+        <td><strong>High</strong></td>
+        <td>DLive aurora, earth glow</td>
+      </tr>
+      <tr>
+        <td>Multiple <code>box-shadow</code> animations</td>
+        <td>Medium-High</td>
+        <td>Star fields with 30+ shadows</td>
+      </tr>
+      <tr>
+        <td>Web Audio API oscillators</td>
+        <td>Medium</td>
+        <td>10+ concurrent oscillators</td>
+      </tr>
+      <tr>
+        <td>CSS transform animations</td>
+        <td>Low</td>
+        <td>Rain drops, steam (GPU-accelerated)</td>
+      </tr>
+    </table>
+
+    <h3>Optimization Options (If Needed)</h3>
+    <p>If adding more streams, consider these optimizations for high-CPU themes:</p>
+    <ul>
+      <li>Remove SVG path animations - replace with CSS transforms or static waveforms</li>
+      <li>Remove or reduce <code>filter: blur()</code> - use pre-blurred images instead</li>
+      <li>Reduce star layers from 3 to 1</li>
+      <li>Slow down animation frequencies (longer durations = fewer repaints)</li>
+      <li>Use CSS <code>will-change</code> hints for GPU acceleration</li>
+    </ul>
+
+    <h3>Why Separate Chromium Instances?</h3>
+    <p>Each stream runs its own Chromium instance rather than tabs in one browser:</p>
+    <table>
+      <tr>
+        <th>Approach</th>
+        <th>Pros</th>
+        <th>Cons</th>
+      </tr>
+      <tr>
+        <td><strong>Separate instances (current)</strong></td>
+        <td>Isolation - one crash doesn't kill all streams</td>
+        <td>~500MB RAM overhead per instance</td>
+      </tr>
+      <tr>
+        <td>Single instance, multiple windows</td>
+        <td>Shared memory, less overhead</td>
+        <td>Single point of failure, resource contention</td>
+      </tr>
+    </table>
+    <p><strong>Decision:</strong> With RAM at only 13% usage, the isolation benefit outweighs memory savings. Keep separate instances.</p>
   </section>
 
   <section id="secrets">
@@ -653,7 +802,7 @@ jobs:
   <section id="scaling">
     <h2>Scaling Considerations</h2>
 
-    <h3>Current Capacity (CPX62)</h3>
+    <h3>Current Capacity (CPX62) - Measured Dec 2025</h3>
     <table>
       <tr>
         <th>Streams</th>
@@ -662,24 +811,31 @@ jobs:
         <th>Status</th>
       </tr>
       <tr>
-        <td>2 (current)</td>
-        <td>~17%</td>
-        <td>~1.4GB</td>
+        <td>5 (current)</td>
+        <td>~68%</td>
+        <td>~4GB (13%)</td>
         <td>Running</td>
       </tr>
       <tr>
-        <td>8</td>
-        <td>~50%</td>
+        <td>6 (with Rumble)</td>
+        <td>~80%</td>
         <td>~5GB</td>
-        <td>Comfortable</td>
+        <td>Near limit</td>
       </tr>
       <tr>
-        <td>16-20</td>
-        <td>~100%</td>
-        <td>~12GB</td>
-        <td>Max capacity</td>
+        <td>8</td>
+        <td>~100%+</td>
+        <td>~6.5GB</td>
+        <td>Would require optimization</td>
       </tr>
     </table>
+
+    <div class="warning-box">
+      <h4>Quality vs Quantity Trade-off</h4>
+      <p>With high-quality animated themes (like Space Station), each stream uses more CPU than initially estimated.
+         5-6 polished streams with unique themes is the sweet spot for this server.
+         Adding more platforms would require either simpler themes or a server upgrade.</p>
+    </div>
 
     <h3>Scaling Strategy</h3>
     <div class="mermaid">
@@ -736,9 +892,13 @@ ssh -i ~/api-secrets/hetzner-server/id_ed25519 root@135.181.150.82 \
 
   <footer>
     <p>
-      <a href="https://github.com/ldraney/lofi-stream-docs">lofi-stream-docs</a> |
-      <a href="https://github.com/ldraney/lofi-stream-youtube">lofi-stream-youtube</a> |
-      <a href="https://github.com/ldraney/lofi-stream-twitch">lofi-stream-twitch</a>
+      <a href="https://github.com/ldraney/lofi-stream-docs">docs</a> |
+      <a href="https://github.com/ldraney/lofi-stream-youtube">youtube</a> |
+      <a href="https://github.com/ldraney/lofi-stream-twitch">twitch</a> |
+      <a href="https://github.com/ldraney/lofi-stream-kick">kick</a> |
+      <a href="https://github.com/ldraney/lofi-stream-dlive">dlive</a> |
+      <a href="https://github.com/ldraney/lofi-stream-odysee">odysee</a> |
+      <a href="https://github.com/ldraney/lofi-stream-rumble">rumble</a>
     </p>
     <p>Prod: 135.181.150.82 | Dev: 5.78.42.22 | Last updated: December 2025</p>
   </footer>
