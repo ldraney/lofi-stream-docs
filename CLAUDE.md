@@ -14,6 +14,7 @@ Central documentation hub and DevOps scripts for the lofi-stream project.
 ├── lofi-stream-frontend/    # Status page (served from VPS)
 ├── lofi-stream-docs/        # This repo (documentation + DevOps)
 ├── lofi-stream-infra/       # Terraform + Ansible infrastructure
+├── lofi-stream-segmentation/ # AI transcription & segmentation pipeline
 └── lofi-watts-content/      # Alan Watts audio content management
 ```
 
@@ -206,6 +207,47 @@ ssh root@<server-ip> 'pactl list sink-inputs short'
 
 ---
 
+## Lecture Segmentation Pipeline
+
+**Repo:** [lofi-stream-segmentation](https://github.com/ldraney/lofi-stream-segmentation)
+
+AI-powered transcription and segmentation of Alan Watts lectures into <15 minute segments for the radio format.
+
+### Pipeline
+
+```
+MP3 Audio → faster-whisper (CPU) → transcript.json → Claude analysis → segments.json
+```
+
+### Pilot Segmentations Complete (v0.1.0)
+
+| Stream | Platform | Lecture | Duration | Segments |
+|--------|----------|---------|----------|----------|
+| night_city | YouTube | The Future of Communications | 21.3m | 3 |
+| coffee_shop | Twitch | Meditation | 28.3m | 4 |
+| arcade | Kick | Play and Survival | 32.3m | 3 |
+| space_station | DLive | Spectrum of Love | 28.0m | 4 |
+| underwater | Odysee | Swimming Headless | 27.1m | 3 |
+
+**Total: 137 minutes → 17 segments (avg 8.1 min each)**
+
+### Segment Output Format
+
+Each segment includes:
+- Start/end timestamps (seconds and MM:SS)
+- AI-generated descriptive title
+- Summary of content
+- Key quotes
+
+### Next Steps
+
+1. Batch transcribe remaining 225 lectures from lofi-watts-content
+2. Analyze each transcript for segment breaks
+3. Generate overlay/playlist data from segments.json files
+4. Integrate with stream repos for automatic segment display
+
+---
+
 ## Roadmap: Content Partnerships
 
 **The Vision:** Become a distribution partner for Alan Watts' teachings - not just using content, but actively promoting authentic materials to a new generation through lofi streams. We spread the ideas, drive people to official sources, and share in the success.
@@ -264,12 +306,14 @@ The partnership allows up to 15 minutes of content per segment. We turn this int
 
 ### Phase 1: Add Radio Features to Live Streams
 
-**Status:** Streams are already running with Alan Watts content. Now add the "radio station" polish that makes it partnership-ready.
+**Status:** Segmentation pipeline built! 5 pilot lectures segmented. Infrastructure rebuilding.
 
+- [x] **Build segmentation pipeline** - faster-whisper + Claude analysis ([lofi-stream-segmentation](https://github.com/ldraney/lofi-stream-segmentation))
+- [x] **Segment pilot lectures** - 5 lectures → 17 segments (v0.1.0 released)
+- [ ] **Batch segment remaining lectures** - 225 more to process
 - [ ] **Add overlay system** - "Now playing:", "Up next:", source album attribution
 - [ ] **Set up chat bot** - Auto-posts affiliate links during/after each segment
 - [ ] **Update stream descriptions** - Links to alanwatts.org, books, lecture collections
-- [ ] **Create lecture rotation playlists** - Curate 15-min segments matched to each theme
 - [ ] **Add lofi break screens** - "Coming up next...", "Previous lecture from..."
 - [ ] **Record demo video** - Capture the full experience for the application
 
