@@ -218,16 +218,16 @@ The partnership allows up to 15 minutes of content per segment. We turn this int
 | Space Station | Cosmic/vast | The universe, consciousness, interconnection |
 | Underwater | Flowing/calm | Going with the flow, water philosophy, naturalness |
 
-### Phase 1: Build the Platform First
+### Phase 1: Add Radio Features to Live Streams
 
-**Strategy:** Build the entire radio system with placeholder/royalty-free content, then show them a working demo. When they approve, we just swap in the real content.
+**Status:** Streams are already running with Alan Watts content. Now add the "radio station" polish that makes it partnership-ready.
 
-- [ ] **Stabilize all 5 live streams** - Ensure 24/7 uptime, fix any visual/audio issues
-- [ ] **Build the radio rotation system** - 15-min segment → lofi break → next segment
-- [ ] **Create overlay system** - "Now playing:", "Up next:", source attribution
+- [ ] **Add overlay system** - "Now playing:", "Up next:", source album attribution
 - [ ] **Set up chat bot** - Auto-posts affiliate links during/after each segment
-- [ ] **Test with placeholder content** - Use royalty-free spoken word to prove the system works
-- [ ] **Record demo video** - Show the full experience: lecture → break → promo → next lecture
+- [ ] **Update stream descriptions** - Links to alanwatts.org, books, lecture collections
+- [ ] **Create lecture rotation playlists** - Curate 15-min segments matched to each theme
+- [ ] **Add lofi break screens** - "Coming up next...", "Previous lecture from..."
+- [ ] **Record demo video** - Capture the full experience for the application
 
 ### Phase 2: Submit Polished Application
 
@@ -290,28 +290,29 @@ No additional costs until we have revenue to justify them.
 
 ### Draft Message for Application
 
-> I run a network of 24/7 lofi streaming channels with unique visual themes - cyberpunk cityscapes, cozy coffee shops, retro arcades, quiet libraries, and more. I'd like to build an "Alan Watts Radio" experience that introduces his teachings to new audiences while actively promoting official materials.
+> I've already built something I hope you'll appreciate - a network of 24/7 "Alan Watts Radio" lofi streams that are live right now as a passion project.
 >
-> **The format (designed around your 15-minute guideline):**
-> - 15-minute lecture segments matched to each visual theme
-> - Lofi music breaks between segments showing "Up next:" and source attribution
-> - On-screen overlays display the lecture title and which album/collection it's from
-> - Chat bots automatically post affiliate links to the full lecture on alanwatts.org
-> - Stream descriptions link to official books, lectures, and materials
+> I own the complete lecture library and have been pairing talks with themed visual environments: cyberpunk cityscapes, cozy coffee shops, retro arcades, quiet libraries. Each stream runs 15-minute lecture segments with lofi music breaks in between - designed around your partnership guidelines.
+>
+> **What's already running:**
+> - 5 themed 24/7 streams across YouTube, Twitch, Kick, DLive, and Odysee
+> - [LINKS TO LIVE STREAMS]
+> - Professional automated infrastructure with reliable uptime
+> - Lecture segments matched to visual themes (presence/mindfulness for cozy vibes, play/spontaneity for arcade, etc.)
+>
+> **What I'd like to formalize:**
+> - Official partnership so I can properly attribute and link to alanwatts.org
+> - Affiliate links in all stream descriptions, overlays, and chat bots
+> - Revenue share on the content I'm already sharing with viewers
+> - On-screen overlays showing lecture titles, source albums, and where to buy the full collection
 >
 > **Why this works:**
-> - Viewers get a taste → see where to buy the full lecture → discover more
-> - The 15-minute format creates natural breaks that drive people to the source
-> - Each segment is essentially a 15-minute advertisement for the complete collection
+> - Viewers get a 15-minute taste → see where to buy the full lecture → discover more
+> - Each segment is essentially an advertisement for the complete collection
+> - The lofi study/work demographic discovers Watts through an aesthetic they already love
 > - We succeed when viewers want MORE and go to alanwatts.org to get it
 >
-> **What I've built:**
-> - 5 themed 24/7 streams across YouTube, Twitch, Kick, DLive, and Odysee
-> - Professional automated infrastructure (reliable uptime)
-> - The rotation/overlay system is ready - we just need approved content to plug in
-> - [See demo: LINK TO DEMO VIDEO]
->
-> I'm not asking to use content - I'm proposing to build a radio station that markets Alan Watts to a generation that discovers philosophy through lofi study streams. Every piece of the system is designed to drive viewers toward authentic sources.
+> I built this because Alan Watts' teachings have meant a lot to me, and I wanted to share them with a new generation in a format that fits how they consume content. I'd love to do this properly as partners - turning on monetization and affiliate links together, with full attribution driving people to authentic sources.
 >
 > I'd love to discuss how we can work together.
 
